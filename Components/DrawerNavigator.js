@@ -3,6 +3,7 @@ import { createDrawerNavigator } from 'react-navigation-drawer';
 import { Icon } from 'react-native-elements';
 import CustomSideBarMenu from "./CustomSideBarMenu";
 import SettingsScreen from "../Screens/SettingsScreen";
+import NotificationsScreen from "../Screens/NotificationsScreen";
 import { TabNavigator } from './TabNavigator';
 
 
@@ -25,6 +26,16 @@ export const DrawerNavigator = createDrawerNavigator({
                 <Icon />
             ),
             drawerLabel: "Home"
+        }
+    },
+
+    NotificationsScreen: {
+        screen: NotificationsScreen,
+        navigationOptions: {
+            drawerIcon: (
+                <Icon />
+            ),
+            drawerLabel: "Notifications"
         }
     }
 
