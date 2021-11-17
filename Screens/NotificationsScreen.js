@@ -15,13 +15,20 @@ export default class NotificationsScreen extends React.Component {
 
         this.state = {
             userId: '',
-            classesData: []
+            classesData: [],
+            willTheyCome : ''
         }
     }
 
 
     componentDidMount(){
         this.getUserId();
+        this.fetchClassesData();
+    }
+
+
+    componentWillUnmount(){
+        this.checkToSendNotification();
     }
 
 
@@ -57,6 +64,8 @@ export default class NotificationsScreen extends React.Component {
                 })
 
             })
+
+            console.log("Fighting with the eyes of the blind")
         }
         else{
             console.log("Somehow, it is empty");
@@ -118,6 +127,9 @@ export default class NotificationsScreen extends React.Component {
 
         }
 
+        console.log("For we're breaking in the new boys")
+        return alert("It's the gnome service, of course");
+
     }
 
 
@@ -152,6 +164,12 @@ export default class NotificationsScreen extends React.Component {
                     this.checkToSendNotification();
                 }}>
                     <Text>Run this.checkToSendNotification()</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity onPress = {()=>{
+                    console.log( this.state.classesData.length )
+                }}>
+                    <Text>Aooooooooo</Text>
                 </TouchableOpacity>
 
             </View>

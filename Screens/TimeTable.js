@@ -144,40 +144,375 @@ export default class TimeTable extends React.Component {
     
     renderItemMonday = ({ item }) => {
         var classes = this.state.classesData;
-      //  console.log( "this.state.classesData => " + classes )
         var classItem, isClass, x, classData;
         // change in each renderItem
-        var day = "1";
+        var day = 1;
         var length = classes.length
-      //  console.log( " length => " + length )
 
         for( x = 0; x < length; x++ ){
 
             classItem = classes[x]
-            console.log( " classItem for " + item + " => " + classItem  )
-
-         //console.log("checking for class_date for " + item + " => " + moment( classItem.class_date ).format() )
-          // console.log( "checking for class_date for " + item + " => " + moment( classItem.class_date ).day() )
 
             var classDay = moment( classItem.class_date ).day()
-         //   console.log( " classDay for " + item + " => " + classDay )
             var classStartHour = moment( classItem.class_starting_timing ).hour()
-         //   console.log( "classStartHour for " + item + " => " + classStartHour)
+            var classTime = moment( classItem.class_starting_timing ).format('HH:mm')
 
-            if( classDay !== day ){
-                continue;
-            }
-            else{
+            if( classDay === day ){
 
                 if( classStartHour === item ){
                     isClass = true
                     classItem = classData
-                  //  console.log( " classData for " + item + " => " + classData )
                 }
                 else{
                     continue;
                 }
 
+            }
+            else{
+
+                continue;
+                
+            }
+
+        }
+
+        if( isClass === true ){
+            return(
+                <View style = {{ width: '100%', height: '100%' }}>
+                    <TouchableOpacity
+                    onPress = {()=>{
+                        this.props.navigation.navigate('ClassDetailsScreen', { "data": classItem })
+                    }}>
+                        <Text>{ classTime }</Text>
+                    </TouchableOpacity>
+                </View>
+            )
+        }
+        else{
+            return(
+                <View style = {{ backgroundColor: 'red', borderWidth: 2, borderColor: 'pink', width: '100%', height: '100%' }}>
+                    <Text style = {{ color: 'white' }}>{item}</Text>
+                </View>
+            )
+        }
+    }
+
+
+    renderItemTuesday = ({ item }) => {
+        var classes = this.state.classesData;
+        var classItem, isClass, x, classData;
+        // change in each renderItem
+        var day = 2;
+        var length = classes.length
+
+        for( x = 0; x < length; x++ ){
+
+            classItem = classes[x]
+
+            var classDay = moment( classItem.class_date ).day()
+            var classStartHour = moment( classItem.class_starting_timing ).hour()
+
+            if( classDay === day ){
+
+                if( classStartHour === item ){
+                    isClass = true
+                    classItem = classData
+                }
+                else{
+                    continue;
+                }
+
+            }
+            else{
+
+                console.log("I am an idiot computer")
+                continue;
+                
+            }
+
+        }
+
+        if( isClass === true ){
+            return(
+                <View>
+                    <TouchableOpacity style = {{ width: '100%', height: '100%' }}
+                    onPress = {()=>{
+                        this.props.navigation.navigate('ClassDetailsScreen')
+                    }}>
+                        <Text>{ classItem.class_date }</Text>
+                        <Text>HERE'S A CLASS</Text>
+                    </TouchableOpacity>
+                </View>
+            )
+        }
+        else{
+            return(
+                <View style = {{ backgroundColor: 'red', borderWidth: 2, borderColor: 'pink' }}>
+                    <Text style = {{ color: 'white' }}>{item}</Text>
+                </View>
+            )
+        }
+    }
+
+
+    renderItemWednesday = ({ item }) => {
+        var classes = this.state.classesData;
+        var classItem, isClass, x, classData;
+        // change in each renderItem
+        var day = 3;
+        var length = classes.length
+
+        for( x = 0; x < length; x++ ){
+
+            classItem = classes[x]
+
+            var classDay = moment( classItem.class_date ).day()
+            var classStartHour = moment( classItem.class_starting_timing ).hour()
+
+            if( classDay === day ){
+
+                if( classStartHour === item ){
+                    isClass = true
+                    classItem = classData
+                }
+                else{
+                    continue;
+                }
+
+            }
+            else{
+
+                console.log("I am an idiot computer")
+                continue;
+                
+            }
+
+        }
+
+        if( isClass === true ){
+            return(
+                <View>
+                    <TouchableOpacity style = {{ width: '100%', height: '100%' }}
+                    onPress = {()=>{
+                        this.props.navigation.navigate('ClassDetailsScreen')
+                    }}>
+                        <Text>{ classItem.class_date }</Text>
+                        <Text>HERE'S A CLASS</Text>
+                    </TouchableOpacity>
+                </View>
+            )
+        }
+        else{
+            return(
+                <View style = {{ backgroundColor: 'red', borderWidth: 2, borderColor: 'pink' }}>
+                    <Text style = {{ color: 'white' }}>{item}</Text>
+                </View>
+            )
+        }
+    }
+
+
+    renderItemThursday = ({ item }) => {
+        var classes = this.state.classesData;
+        var classItem, isClass, x, classData;
+        // change in each renderItem
+        var day = 4;
+        var length = classes.length
+
+        for( x = 0; x < length; x++ ){
+
+            classItem = classes[x]
+
+            var classDay = moment( classItem.class_date ).day()
+            var classStartHour = moment( classItem.class_starting_timing ).hour()
+
+            if( classDay === day ){
+
+                if( classStartHour === item ){
+                    isClass = true
+                    classItem = classData
+                }
+                else{
+                    continue;
+                }
+
+            }
+            else{
+
+                console.log("I am an idiot computer")
+                continue;
+                
+            }
+
+        }
+
+        if( isClass === true ){
+            return(
+                <View>
+                    <TouchableOpacity style = {{ width: '100%', height: '100%' }}
+                    onPress = {()=>{
+                        this.props.navigation.navigate('ClassDetailsScreen')
+                    }}>
+                        <Text>{ classItem.class_date }</Text>
+                        <Text>HERE'S A CLASS</Text>
+                    </TouchableOpacity>
+                </View>
+            )
+        }
+        else{
+            return(
+                <View style = {{ backgroundColor: 'red', borderWidth: 2, borderColor: 'pink' }}>
+                    <Text style = {{ color: 'white' }}>{item}</Text>
+                </View>
+            )
+        }
+    }
+
+
+    renderItemFriday = ({ item }) => {
+        var classes = this.state.classesData;
+        var classItem, isClass, x, classData;
+        // change in each renderItem
+        var day = 5;
+        var length = classes.length
+
+        for( x = 0; x < length; x++ ){
+
+            classItem = classes[x]
+
+            var classDay = moment( classItem.class_date ).day()
+            var classStartHour = moment( classItem.class_starting_timing ).hour()
+
+            if( classDay === day ){
+
+                if( classStartHour === item ){
+                    isClass = true
+                    classItem = classData
+                }
+                else{
+                    continue;
+                }
+
+            }
+            else{
+
+                console.log("I am an idiot computer")
+                continue;
+                
+            }
+
+        }
+
+        if( isClass === true ){
+            return(
+                <View>
+                    <TouchableOpacity style = {{ width: '100%', height: '100%' }}
+                    onPress = {()=>{
+                        this.props.navigation.navigate('ClassDetailsScreen')
+                    }}>
+                        <Text>{ classItem.class_date }</Text>
+                        <Text>HERE'S A CLASS</Text>
+                    </TouchableOpacity>
+                </View>
+            )
+        }
+        else{
+            return(
+                <View style = {{ backgroundColor: 'red', borderWidth: 2, borderColor: 'pink' }}>
+                    <Text style = {{ color: 'white' }}>{item}</Text>
+                </View>
+            )
+        }
+    }
+
+
+    renderItemSaturday = ({ item }) => {
+        var classes = this.state.classesData;
+        var classItem, isClass, x, classData;
+        // change in each renderItem
+        var day = 6;
+        var length = classes.length
+
+        for( x = 0; x < length; x++ ){
+
+            classItem = classes[x]
+
+            var classDay = moment( classItem.class_date ).day()
+            var classStartHour = moment( classItem.class_starting_timing ).hour()
+
+            if( classDay === day ){
+
+                if( classStartHour === item ){
+                    isClass = true
+                    classItem = classData
+                }
+                else{
+                    continue;
+                }
+
+            }
+            else{
+
+                console.log("I am an idiot computer")
+                continue;
+                
+            }
+
+        }
+
+        if( isClass === true ){
+            return(
+                <View>
+                    <TouchableOpacity style = {{ width: '100%', height: '100%' }}
+                    onPress = {()=>{
+                        this.props.navigation.navigate('ClassDetailsScreen')
+                    }}>
+                        <Text>{ classItem.class_date }</Text>
+                        <Text>HERE'S A CLASS</Text>
+                    </TouchableOpacity>
+                </View>
+            )
+        }
+        else{
+            return(
+                <View style = {{ backgroundColor: 'red', borderWidth: 2, borderColor: 'pink' }}>
+                    <Text style = {{ color: 'white' }}>{item}</Text>
+                </View>
+            )
+        }
+    }
+
+
+    renderItemSunday = ({ item }) => {
+        var classes = this.state.classesData;
+        var classItem, isClass, x, classData;
+        // change in each renderItem
+        var day = 0;
+        var length = classes.length
+
+        for( x = 0; x < length; x++ ){
+
+            classItem = classes[x]
+
+            var classDay = moment( classItem.class_date ).day()
+            var classStartHour = moment( classItem.class_starting_timing ).hour()
+
+            if( classDay === day ){
+
+                if( classStartHour === item ){
+                    isClass = true
+                    classItem = classData
+                }
+                else{
+                    continue;
+                }
+
+            }
+            else{
+
+                console.log("I am an idiot computer")
+                continue;
+                
             }
 
         }
@@ -246,37 +581,37 @@ export default class TimeTable extends React.Component {
 
                             <FlatList
                                 data = {this.getVisibleHours()}
-                                renderItem = {this.renderItemMonday}
+                                renderItem = {this.renderItemTuesday}
                                 keyExtractor = {this.keyExtractor}
                             />
 
                             <FlatList
                                 data = {this.getVisibleHours()}
-                                renderItem = {this.renderItemMonday}
+                                renderItem = {this.renderItemWednesday}
+                                keyExtractor = {this.keyExtractor}
+                            />
+
+                            <FlatList
+                                data = {this.getVisibleHours()}
+                                renderItem = {this.renderItemThursday}
                                 keyExtractor = {this.keyExtractor}
                             />
 
                            <FlatList
                                 data = {this.getVisibleHours()}
-                                renderItem = {this.renderItemMonday}
+                                renderItem = {this.renderItemFriday}
                                 keyExtractor = {this.keyExtractor}
                             />
 
                             <FlatList
                                 data = {this.getVisibleHours()}
-                                renderItem = {this.renderItemMonday}
+                                renderItem = {this.renderItemSaturday}
                                 keyExtractor = {this.keyExtractor}
                             />
 
                             <FlatList
                                 data = {this.getVisibleHours()}
-                                renderItem = {this.renderItemMonday}
-                                keyExtractor = {this.keyExtractor}
-                            />
-
-                            <FlatList
-                                data = {this.getVisibleHours()}
-                                renderItem = {this.renderItemMonday}
+                                renderItem = {this.renderItemSunday}
                                 keyExtractor = {this.keyExtractor}
                             />
 
