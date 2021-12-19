@@ -66,9 +66,9 @@ export default class FormScreen extends React.Component {
                 var classStart = classDate + " " + classStartingTiming
                 var classEnd = classDate + " " + classEndingTiming
         
-                var classStartMoment = moment(classStart, 'YYYY-MM-DD HH:mm').format();
-                var classEndMoment = moment(classEnd, 'YYYY-MM-DD HH:mm').format();
-                var classDateMoment = moment(classDate, 'YYYY-MM-DD').format();
+                var classStartMoment = moment(classStart, 'DD-MM-YYYY HH:mm').format();
+                var classEndMoment = moment(classEnd, 'DD-MM-YYYY HH:mm').format();
+                var classDateMoment = moment(classDate, 'DD-MM-YYYY').format();
 
                 try{
     
@@ -110,10 +110,10 @@ export default class FormScreen extends React.Component {
     classDateField = () => {
         return(
             <TextInputMask 
-                placeholder = {'YYYY-MM-DD'}
+                placeholder = {'DD-MM-YYYY'}
                 type = {'datetime'}
                 options = {{
-                    format: 'YYYY-MM-DD'
+                    format: 'DD-MM-YYYY'
                 }}
                 value = {this.state.classDate}
                 onChangeText = { (text)=>{

@@ -81,6 +81,7 @@ export default class TimeTable extends React.Component {
     fetchClassesData = async () => {
         const db = getFirestore(app);
         var userId = this.state.userId
+        var docId
 
         const q = query( collection(db, "Scheduled Classes"), where('user_id','==',userId) )
 
@@ -148,6 +149,7 @@ export default class TimeTable extends React.Component {
         // change in each renderItem
         var day = 1;
         var length = classes.length
+        var definiteClassTime
 
         for( x = 0; x < length; x++ ){
 
@@ -161,7 +163,8 @@ export default class TimeTable extends React.Component {
 
                 if( classStartHour === item ){
                     isClass = true
-                    classItem = classData
+                    classData = classItem
+                    definiteClassTime = classTime
                 }
                 else{
                     continue;
@@ -181,9 +184,9 @@ export default class TimeTable extends React.Component {
                 <View style = {{ width: '100%', height: '100%' }}>
                     <TouchableOpacity
                     onPress = {()=>{
-                        this.props.navigation.navigate('ClassDetailsScreen', { "data": classItem })
+                        this.props.navigation.navigate('ClassDetailsScreen', { "data": classData })
                     }}>
-                        <Text>{ classTime }</Text>
+                        <Text>{ definiteClassTime }</Text>
                     </TouchableOpacity>
                 </View>
             )
@@ -204,6 +207,7 @@ export default class TimeTable extends React.Component {
         // change in each renderItem
         var day = 2;
         var length = classes.length
+        var definiteClassTime
 
         for( x = 0; x < length; x++ ){
 
@@ -211,12 +215,14 @@ export default class TimeTable extends React.Component {
 
             var classDay = moment( classItem.class_date ).day()
             var classStartHour = moment( classItem.class_starting_timing ).hour()
+            var classTime = moment( classItem.class_starting_timing ).format('HH:mm')
 
             if( classDay === day ){
 
                 if( classStartHour === item ){
                     isClass = true
-                    classItem = classData
+                    classData = classItem
+                    definiteClassTime = classTime
                 }
                 else{
                     continue;
@@ -225,29 +231,28 @@ export default class TimeTable extends React.Component {
             }
             else{
 
-                console.log("I am an idiot computer")
                 continue;
                 
             }
 
         }
 
+        
         if( isClass === true ){
             return(
-                <View>
-                    <TouchableOpacity style = {{ width: '100%', height: '100%' }}
+                <View style = {{ width: '100%', height: '100%' }}>
+                    <TouchableOpacity
                     onPress = {()=>{
-                        this.props.navigation.navigate('ClassDetailsScreen')
+                        this.props.navigation.navigate('ClassDetailsScreen', { "data": classData })
                     }}>
-                        <Text>{ classItem.class_date }</Text>
-                        <Text>HERE'S A CLASS</Text>
+                        <Text>{ definiteClassTime }</Text>
                     </TouchableOpacity>
                 </View>
             )
         }
         else{
             return(
-                <View style = {{ backgroundColor: 'red', borderWidth: 2, borderColor: 'pink' }}>
+                <View style = {{ backgroundColor: 'red', borderWidth: 2, borderColor: 'pink', width: '100%', height: '100%' }}>
                     <Text style = {{ color: 'white' }}>{item}</Text>
                 </View>
             )
@@ -261,6 +266,7 @@ export default class TimeTable extends React.Component {
         // change in each renderItem
         var day = 3;
         var length = classes.length
+        var definiteClassTime
 
         for( x = 0; x < length; x++ ){
 
@@ -268,12 +274,14 @@ export default class TimeTable extends React.Component {
 
             var classDay = moment( classItem.class_date ).day()
             var classStartHour = moment( classItem.class_starting_timing ).hour()
+            var classTime = moment( classItem.class_starting_timing ).format('HH:mm')
 
             if( classDay === day ){
 
                 if( classStartHour === item ){
                     isClass = true
-                    classItem = classData
+                    classData = classItem
+                    definiteClassTime = classTime
                 }
                 else{
                     continue;
@@ -282,29 +290,28 @@ export default class TimeTable extends React.Component {
             }
             else{
 
-                console.log("I am an idiot computer")
                 continue;
                 
             }
 
         }
 
+        
         if( isClass === true ){
             return(
-                <View>
-                    <TouchableOpacity style = {{ width: '100%', height: '100%' }}
+                <View style = {{ width: '100%', height: '100%' }}>
+                    <TouchableOpacity
                     onPress = {()=>{
-                        this.props.navigation.navigate('ClassDetailsScreen')
+                        this.props.navigation.navigate('ClassDetailsScreen', { "data": classData })
                     }}>
-                        <Text>{ classItem.class_date }</Text>
-                        <Text>HERE'S A CLASS</Text>
+                        <Text>{ definiteClassTime }</Text>
                     </TouchableOpacity>
                 </View>
             )
         }
         else{
             return(
-                <View style = {{ backgroundColor: 'red', borderWidth: 2, borderColor: 'pink' }}>
+                <View style = {{ backgroundColor: 'red', borderWidth: 2, borderColor: 'pink', width: '100%', height: '100%' }}>
                     <Text style = {{ color: 'white' }}>{item}</Text>
                 </View>
             )
@@ -318,6 +325,7 @@ export default class TimeTable extends React.Component {
         // change in each renderItem
         var day = 4;
         var length = classes.length
+        var definiteClassTime
 
         for( x = 0; x < length; x++ ){
 
@@ -325,12 +333,14 @@ export default class TimeTable extends React.Component {
 
             var classDay = moment( classItem.class_date ).day()
             var classStartHour = moment( classItem.class_starting_timing ).hour()
+            var classTime = moment( classItem.class_starting_timing ).format('HH:mm')
 
             if( classDay === day ){
 
                 if( classStartHour === item ){
                     isClass = true
-                    classItem = classData
+                    classData = classItem
+                    definiteClassTime = classTime
                 }
                 else{
                     continue;
@@ -339,29 +349,28 @@ export default class TimeTable extends React.Component {
             }
             else{
 
-                console.log("I am an idiot computer")
                 continue;
                 
             }
 
         }
 
+        
         if( isClass === true ){
             return(
-                <View>
-                    <TouchableOpacity style = {{ width: '100%', height: '100%' }}
+                <View style = {{ width: '100%', height: '100%' }}>
+                    <TouchableOpacity
                     onPress = {()=>{
-                        this.props.navigation.navigate('ClassDetailsScreen')
+                        this.props.navigation.navigate('ClassDetailsScreen', { "data": classData })
                     }}>
-                        <Text>{ classItem.class_date }</Text>
-                        <Text>HERE'S A CLASS</Text>
+                        <Text>{ definiteClassTime }</Text>
                     </TouchableOpacity>
                 </View>
             )
         }
         else{
             return(
-                <View style = {{ backgroundColor: 'red', borderWidth: 2, borderColor: 'pink' }}>
+                <View style = {{ backgroundColor: 'red', borderWidth: 2, borderColor: 'pink', width: '100%', height: '100%' }}>
                     <Text style = {{ color: 'white' }}>{item}</Text>
                 </View>
             )
@@ -375,6 +384,7 @@ export default class TimeTable extends React.Component {
         // change in each renderItem
         var day = 5;
         var length = classes.length
+        var definiteClassTime
 
         for( x = 0; x < length; x++ ){
 
@@ -382,12 +392,14 @@ export default class TimeTable extends React.Component {
 
             var classDay = moment( classItem.class_date ).day()
             var classStartHour = moment( classItem.class_starting_timing ).hour()
+            var classTime = moment( classItem.class_starting_timing ).format('HH:mm')
 
             if( classDay === day ){
 
                 if( classStartHour === item ){
                     isClass = true
-                    classItem = classData
+                    classData = classItem
+                    definiteClassTime = classTime
                 }
                 else{
                     continue;
@@ -396,29 +408,28 @@ export default class TimeTable extends React.Component {
             }
             else{
 
-                console.log("I am an idiot computer")
                 continue;
                 
             }
 
         }
 
+        
         if( isClass === true ){
             return(
-                <View>
-                    <TouchableOpacity style = {{ width: '100%', height: '100%' }}
+                <View style = {{ width: '100%', height: '100%' }}>
+                    <TouchableOpacity
                     onPress = {()=>{
-                        this.props.navigation.navigate('ClassDetailsScreen')
+                        this.props.navigation.navigate('ClassDetailsScreen', { "data": classData })
                     }}>
-                        <Text>{ classItem.class_date }</Text>
-                        <Text>HERE'S A CLASS</Text>
+                        <Text>{ definiteClassTime }</Text>
                     </TouchableOpacity>
                 </View>
             )
         }
         else{
             return(
-                <View style = {{ backgroundColor: 'red', borderWidth: 2, borderColor: 'pink' }}>
+                <View style = {{ backgroundColor: 'red', borderWidth: 2, borderColor: 'pink', width: '100%', height: '100%' }}>
                     <Text style = {{ color: 'white' }}>{item}</Text>
                 </View>
             )
@@ -432,6 +443,7 @@ export default class TimeTable extends React.Component {
         // change in each renderItem
         var day = 6;
         var length = classes.length
+        var definiteClassTime
 
         for( x = 0; x < length; x++ ){
 
@@ -439,12 +451,14 @@ export default class TimeTable extends React.Component {
 
             var classDay = moment( classItem.class_date ).day()
             var classStartHour = moment( classItem.class_starting_timing ).hour()
+            var classTime = moment( classItem.class_starting_timing ).format('HH:mm')
 
             if( classDay === day ){
 
                 if( classStartHour === item ){
                     isClass = true
-                    classItem = classData
+                    classData = classItem
+                    definiteClassTime = classTime
                 }
                 else{
                     continue;
@@ -453,29 +467,28 @@ export default class TimeTable extends React.Component {
             }
             else{
 
-                console.log("I am an idiot computer")
                 continue;
                 
             }
 
         }
 
+        
         if( isClass === true ){
             return(
-                <View>
-                    <TouchableOpacity style = {{ width: '100%', height: '100%' }}
+                <View style = {{ width: '100%', height: '100%' }}>
+                    <TouchableOpacity
                     onPress = {()=>{
-                        this.props.navigation.navigate('ClassDetailsScreen')
+                        this.props.navigation.navigate('ClassDetailsScreen', { "data": classData })
                     }}>
-                        <Text>{ classItem.class_date }</Text>
-                        <Text>HERE'S A CLASS</Text>
+                        <Text>{ definiteClassTime }</Text>
                     </TouchableOpacity>
                 </View>
             )
         }
         else{
             return(
-                <View style = {{ backgroundColor: 'red', borderWidth: 2, borderColor: 'pink' }}>
+                <View style = {{ backgroundColor: 'red', borderWidth: 2, borderColor: 'pink', width: '100%', height: '100%' }}>
                     <Text style = {{ color: 'white' }}>{item}</Text>
                 </View>
             )
@@ -489,6 +502,7 @@ export default class TimeTable extends React.Component {
         // change in each renderItem
         var day = 0;
         var length = classes.length
+        var definiteClassTime
 
         for( x = 0; x < length; x++ ){
 
@@ -496,12 +510,14 @@ export default class TimeTable extends React.Component {
 
             var classDay = moment( classItem.class_date ).day()
             var classStartHour = moment( classItem.class_starting_timing ).hour()
+            var classTime = moment( classItem.class_starting_timing ).format('HH:mm')
 
             if( classDay === day ){
 
                 if( classStartHour === item ){
                     isClass = true
-                    classItem = classData
+                    classData = classItem
+                    definiteClassTime = classTime
                 }
                 else{
                     continue;
@@ -510,29 +526,28 @@ export default class TimeTable extends React.Component {
             }
             else{
 
-                console.log("I am an idiot computer")
                 continue;
                 
             }
 
         }
 
+        
         if( isClass === true ){
             return(
-                <View>
-                    <TouchableOpacity style = {{ width: '100%', height: '100%' }}
+                <View style = {{ width: '100%', height: '100%' }}>
+                    <TouchableOpacity
                     onPress = {()=>{
-                        this.props.navigation.navigate('ClassDetailsScreen')
+                        this.props.navigation.navigate('ClassDetailsScreen', { "data": classData })
                     }}>
-                        <Text>{ classItem.class_date }</Text>
-                        <Text>HERE'S A CLASS</Text>
+                        <Text>{ definiteClassTime }</Text>
                     </TouchableOpacity>
                 </View>
             )
         }
         else{
             return(
-                <View style = {{ backgroundColor: 'red', borderWidth: 2, borderColor: 'pink' }}>
+                <View style = {{ backgroundColor: 'red', borderWidth: 2, borderColor: 'pink', width: '100%', height: '100%' }}>
                     <Text style = {{ color: 'white' }}>{item}</Text>
                 </View>
             )

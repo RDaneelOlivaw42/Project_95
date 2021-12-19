@@ -65,10 +65,9 @@ export default class NotificationsScreen extends React.Component {
 
             })
 
-            console.log("Fighting with the eyes of the blind")
         }
         else{
-            console.log("Somehow, it is empty");
+            console.log("No classes scheduled, aparently");
         }
 
     }
@@ -94,25 +93,19 @@ export default class NotificationsScreen extends React.Component {
                 var FifteenMinutesBeforeClassMin = moment( classItem.class_starting_timing ).subtract(15, 'minutes').minute()
                 var FifteenMinutesBeforeClassHr = moment( classItem.class_starting_timing ).subtract(15, 'minutes').hour()
 
-                var classDate = moment( classItem.class_starting_timing ).date()
-                var currentDate = moment().date()
-                
-                var classMonth = moment( classItem.class_starting_timing ).month()
-                var currentMonth = moment().month()
-
-                var classYear = moment( classItem.class_starting_timing ).year()
-                var currentYear = moment().year()
+                var classDay = moment( classItem.class_starting_timing ).day()
+                var currentDay = moment().day()
                 var timeLeft
 
-                if( classHour === currentHour && classMinutes === currentMinute && classDate === currentDate && classMonth === currentMonth && classYear === currentYear ){
-                    timeLeft = "No time left"
+                if( classHour === currentHour && classMinutes === currentMinute && classDay === currentDay ){
+                    timeLeft = "Class Now"
                     this.sendNotification(classItem, timeLeft);
                 }
-                else if( hourBeforeClassHour === currentHour && classMinutes === currentMinute && classDate === currentDate && classMonth === currentMonth && classYear === currentYear ){
+                else if( hourBeforeClassHour === currentHour && classMinutes === currentMinute && classDay === currentDay ){
                     timeLeft = "1 hour left"
                     this.sendNotification(classItem, timeLeft);
                 }
-                else if( FifteenMinutesBeforeClassHr === currentHour && FifteenMinutesBeforeClassMin === currentMinute && classDate === currentDate && classMonth === currentMonth && classYear === currentYear ){
+                else if( FifteenMinutesBeforeClassHr === currentHour && FifteenMinutesBeforeClassMin === currentMinute && classDay === currentDay ){
                     timeLeft = "15 minutes left"
                     this.sendNotification(classItem, timeLeft);
                 }
@@ -120,15 +113,13 @@ export default class NotificationsScreen extends React.Component {
                     continue;
                 }
 
+
             }
 
         }
         else{
 
         }
-
-        console.log("For we're breaking in the new boys")
-        return alert("It's the gnome service, of course");
 
     }
 
@@ -164,12 +155,6 @@ export default class NotificationsScreen extends React.Component {
                     this.checkToSendNotification();
                 }}>
                     <Text>Run this.checkToSendNotification()</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity onPress = {()=>{
-                    console.log( this.state.classesData.length )
-                }}>
-                    <Text>Aooooooooo</Text>
                 </TouchableOpacity>
 
             </View>

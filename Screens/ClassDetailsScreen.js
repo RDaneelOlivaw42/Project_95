@@ -1,9 +1,9 @@
 import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, FlatList } from 'react-native';
 import AppHeader from '../Components/AppHeader';
 import moment from 'moment';
 import app from '../config';
-import { getFirestore, deleteDoc, collection, where, query, addDoc } from 'firebase/firestore';
+import { getFirestore, deleteDoc, collection, where, query, addDoc, getDocs, limit, doc } from 'firebase/firestore';
 moment().format();
 
 export default class ClassDetailsScreen extends React.Component {
@@ -48,26 +48,65 @@ export default class ClassDetailsScreen extends React.Component {
 
         var durationMinute = classEndTimeMin - classStartTimeMin;
         var durationHour = classEndTimeHr - classStartTimeHr;
-        var duration = durationHour + ":" + durationMinute;
+        var displayMinute, displayHour
+
+        if( durationMinute === 0 ){
+            displayMinute = ''
+        }
+        else if( durationMinute === 1 ){
+            displayMinute = durationMinute + " minute"
+        }
+        else{
+            displayMinute = durationMinute + " minutes"
+        }
+
+        if( durationHour === 0 ){
+            displayHour = ''
+        }
+        else if( durationHour === 1 ){
+            displayHour = durationHour + " hour "
+        }
+        else{
+            displayHour = durationHour + " hours "
+        }
+
+        var duration = displayHour + displayMinute;
         return duration;
     }
 
-//IDK but there's an error somewhere in this function - most likely
+
     deleteClass = async () => {
-        const db = getFirestore(app);
-        const documentReference = query( collection(db, "Scheduled Classes"), where('class_name','==',this.state.className), where('class_starting_timing','==',this.state.classStartTime),
-        where('class_ending_timing','==',this.state.classEndTime), where('other_details','==',this.state.otherDetails), where('user_id','==',this.state.userId), where('class_date','==',this.state.classDate) )
+        const db = getFirestore(app)
+        var docId
 
-        const refDoc = await deleteDoc(documentReference);
+        const q = query( collection(db, "Scheduled Classes"), where('user_id','==',this.state.userId), where('class_name','==',this.state.className), where('class_date','==',this.state.classDate), where('class_starting_timing','==',this.state.classStartTime),
+        where('class_ending_timing','==',this.state.classEndTime), where('other_details','==',this.state.otherDetails), limit(1))
 
-        return alert("Class has been cancelled.")
+        const documentReference = await getDocs(q)
+
+        if(documentReference){
+            documentReference.forEach( async (doc)=>{
+
+                var docIdArray = documentReference.docs.map( document => document.id )
+                docId = docIdArray.toString()
+
+            })
+        }
+        else{
+            return alert("Sod off")
+        }
+
+        await deleteDoc( doc(db, "Scheduled Classes", docId) )
+
+        return alert("Class has been cancelled")
     }
 
 
     classAttended = async () => {
         const db = getFirestore(app);
+        var docId
 
-        //adding document to 'Completed Classes'
+       //adding document to 'Completed Classes'
         const document = addDoc( collection(db, 'Completed Classes'), {
             user_id: this.state.userId,
             class_name: this.state.className,
@@ -77,13 +116,28 @@ export default class ClassDetailsScreen extends React.Component {
             other_details: this.state.otherDetails
         });
 
-        //deleting document from 'Scheduled Classes'
-        const documentReference = query( collection(db, "Scheduled Classes"), where('class_name','==',this.state.className), where('class_starting_timing','==',this.state.classStartTime),
-        where('class_ending_timing','==',this.state.classEndTime), where('other_details','==',this.state.otherDetails), where('user_id','==',this.state.userId), where('class_date','==',this.state.classDate) )
+        //deleting document from Scheduled Classes
+        const q = query( collection(db, "Scheduled Classes"), where('user_id','==',this.state.userId), where('class_name','==',this.state.className), where('class_date','==',this.state.classDate), where('class_starting_timing','==',this.state.classStartTime),
+        where('class_ending_timing','==',this.state.classEndTime), where('other_details','==',this.state.otherDetails), limit(1))
 
-        const refDoc = await deleteDoc(documentReference);
+        const documentReference = await getDocs(q)
 
-        return alert("Class has been marked as Attended")
+        if(documentReference){
+            documentReference.forEach( async (doc)=>{
+
+                var docIdArray = documentReference.docs.map( document => document.id )
+                docId = docIdArray.toString()
+
+            })
+        }
+        else{
+            return alert("Sod off")
+        }
+
+        await deleteDoc( doc(db, "Scheduled Classes", docId) )
+
+
+        return alert("Class has been marked as attended")
     }
 
 
