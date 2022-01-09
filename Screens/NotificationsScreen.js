@@ -1,8 +1,9 @@
 import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, FlatList } from 'react-native';
+import { ListItem, Icon } from 'react-native-elements';
 import AppHeader from '../Components/AppHeader';
 import app from '../config';
-import { getFirestore, getDocs, collection, query, addDoc, where } from 'firebase/firestore';
+import { getFirestore, getDocs, collection, query, addDoc, where, updateDoc, doc, limit } from 'firebase/firestore';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import moment from 'moment';
 moment().format();
@@ -16,7 +17,8 @@ export default class NotificationsScreen extends React.Component {
         this.state = {
             userId: '',
             classesData: [],
-            willTheyCome : ''
+            notificationsData: [],
+            ranFunction: 0
         }
     }
 
@@ -24,10 +26,6 @@ export default class NotificationsScreen extends React.Component {
     componentDidMount(){
         this.getUserId();
         this.fetchClassesData();
-    }
-
-
-    componentWillUnmount(){
         this.checkToSendNotification();
     }
 
@@ -132,8 +130,90 @@ export default class NotificationsScreen extends React.Component {
             class_time: classItem.class_starting_timing,
             message: "You have " + classItem.class_name + " class at " + classItem.class_starting_timing,
             time_left: timeLeft,
-            user_id: this.state.userId
+            user_id: this.state.userId,
+            mark_as_read: false
         });
+    }
+
+
+    fetchNotifications = async () => {
+        const db = getFirestore(app)
+        var userId = this.state.userId
+        
+        const q = query( collection(db, 'All Notifications'), where('user_id','==',userId) )
+
+        const querySnapshot = await getDocs(q)
+
+        if(querySnapshot){
+            querySnapshot.forEach( (doc)=>{
+
+                var updatedNotificationsData = querySnapshot.docs.map( document => document.data() )
+                this.setState({
+                    notificationsData: updatedNotificationsData
+                })
+
+            })
+        }
+        else{
+            console.log("No notifications")
+        }
+    }
+
+
+    markNotificationAsRead = async (notification) => {
+        const db = getFirestore(app);
+        var className = notification.class_name
+        var classTime = notification.class_time
+        var message = notification.message
+        var timeLeft = notification.time_left
+        var userId = notification.user_id
+
+        const q = query( collection(db, 'All Notifications'), where('class_name','==',className), where('class_time','==',classTime), 
+        where('message','==',message), where('time_left','==',timeLeft), where('user_id','==',userId), limit(1) )
+
+        const querySnapshot = await getDocs(q)
+
+        if(querySnapshot){
+            querySnapshot.forEach( (document)=>{
+                var docId = document.id
+
+                const documentReference = doc(db, 'All Notifications', docId)
+                updateDoc( documentReference, {
+                    mark_as_read: true
+                })
+
+                return alert("Notification marked as 'read'")
+            })
+        }
+        else{
+
+        }
+    }
+
+
+    keyExtractor = (item, index) => index.toString()
+
+
+    renderItem = ({ i, item }) => {
+        console.log(item)
+        return(
+            <ListItem key = {i} bottomDivider = {true}>
+                <ListItem.Content style = {{ backgroundColor: 'yellow' }}>
+
+
+                    <ListItem.Title>{item.class_name}</ListItem.Title>
+
+                    <ListItem.Subtitle>{item.message}</ListItem.Subtitle>
+
+                    <TouchableOpacity onPress = {()=>{
+                        this.markNotificationAsRead(item)
+                    }}>
+                        <Text>Mark as read</Text>
+                    </TouchableOpacity>
+
+                </ListItem.Content>
+            </ListItem>
+        )
     }
 
 
@@ -143,19 +223,61 @@ export default class NotificationsScreen extends React.Component {
 
                 <AppHeader title = "Notifications" />
                 
-                <Text>NotificationsScreen</Text>
+                <View>
 
-                <TouchableOpacity onPress = {()=>{
-                    this.fetchClassesData();   
-                }}>
-                    <Text>Run this.fetchClassesData()</Text>
-                </TouchableOpacity>
+                    <View>
+                        {
+                            this.state.ranFunction > 0 ?
+                            (
+                                this.state.notificationsData.length === 0 ?
+                                (
+                                    <View>
+                                        <Text>You have no notifications</Text>
+                                    </View>
+                                )
+                                : (
+                                    <View>
 
-                <TouchableOpacity onPress = {()=>{
-                    this.checkToSendNotification();
-                }}>
-                    <Text>Run this.checkToSendNotification()</Text>
-                </TouchableOpacity>
+                                        <View>
+                                            <Text>
+                                            <Text>Read Notifications</Text>
+                                            <Icon name = 'sort-desc' type = 'font-awesome' color = '#696969' />
+                                            </Text>
+                                        </View>
+
+                                        <FlatList 
+                                            data = {this.state.notificationsData}
+                                            renderItem = {this.renderItem}
+                                            keyExtractor = {this.keyExtractor}
+                                        />
+
+                                    </View>
+                                )
+                            )
+                            : (
+                                <View>
+        
+                                    <TouchableOpacity
+                                        onPress = {()=>{
+                                            this.fetchClassesData()
+                                            this.checkToSendNotification()
+                                            this.fetchNotifications()
+                                            this.setState({
+                                                ranFunction: 1
+                                            })
+                                        }}>
+                                            <View style = {{ display: 'flex', flex: 2, flexDirection: 'row' }}>
+                                                <Text>Unread Notifications</Text>
+                                                <Icon name = 'sort-up' type = 'font-awesome' color = '#696969'/>
+                                            </View>
+                                    </TouchableOpacity>
+    
+                                </View>
+                            )
+                        }
+                    </View>
+
+                </View>
 
             </View>
         )

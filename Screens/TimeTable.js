@@ -59,7 +59,7 @@ export default class TimeTable extends React.Component {
 
     componentDidMount(){
         this.getUserId();
-        this.fetchClassesData()
+      //  this.fetchClassesData()
     }
 
 
@@ -96,6 +96,9 @@ export default class TimeTable extends React.Component {
                 })
 
             })
+
+            console.log(this.state.classesData.length)
+            console.log("Running fetchClassesData")
         }
         else{
             console.log("Somehow, this is empty");
@@ -144,64 +147,126 @@ export default class TimeTable extends React.Component {
 
     
     renderItemMonday = ({ item }) => {
-        var classes = this.state.classesData;
-        var classItem, isClass, x, classData;
-        // change in each renderItem
-        var day = 1;
-        var length = classes.length
-        var definiteClassTime
+        if(this.state.classesData.length === 0){
+            this.fetchClassesData()
 
-        for( x = 0; x < length; x++ ){
-
-            classItem = classes[x]
-
-            var classDay = moment( classItem.class_date ).day()
-            var classStartHour = moment( classItem.class_starting_timing ).hour()
-            var classTime = moment( classItem.class_starting_timing ).format('HH:mm')
-
-            if( classDay === day ){
-
-                if( classStartHour === item ){
-                    isClass = true
-                    classData = classItem
-                    definiteClassTime = classTime
+            var classes = this.state.classesData;
+            var classItem, isClass, x, classData;
+            // change in each renderItem
+            var day = 1;
+            var length = classes.length
+            var definiteClassTime
+    
+            for( x = 0; x < length; x++ ){
+    
+                classItem = classes[x]
+    
+                var classDay = moment( classItem.class_date ).day()
+                var classStartHour = moment( classItem.class_starting_timing ).hour()
+                var classTime = moment( classItem.class_starting_timing ).format('HH:mm')
+    
+                if( classDay === day ){
+    
+                    if( classStartHour === item ){
+                        isClass = true
+                        classData = classItem
+                        definiteClassTime = classTime
+                    }
+                    else{
+                        continue;
+                    }
+    
                 }
                 else{
+    
                     continue;
+                    
                 }
-
+    
+            }
+    
+            if( isClass === true ){
+                return(
+                    <View style = {{ width: '100%', height: '100%' }}>
+                        <TouchableOpacity
+                        onPress = {()=>{
+                            this.props.navigation.navigate('ClassDetailsScreen', { "data": classData })
+                        }}>
+                            <Text>{ definiteClassTime }</Text>
+                        </TouchableOpacity>
+                    </View>
+                )
             }
             else{
-
-                continue;
-                
+                return(
+                    <View style = {{ backgroundColor: 'red', borderWidth: 2, borderColor: 'pink', width: '100%', height: '100%' }}>
+                        <Text style = {{ color: 'white' }}>{item}</Text>
+                    </View>
+                )
             }
 
         }
-
-        if( isClass === true ){
-            return(
-                <View style = {{ width: '100%', height: '100%' }}>
-                    <TouchableOpacity
-                    onPress = {()=>{
-                        this.props.navigation.navigate('ClassDetailsScreen', { "data": classData })
-                    }}>
-                        <Text>{ definiteClassTime }</Text>
-                    </TouchableOpacity>
-                </View>
-            )
-        }
         else{
-            return(
-                <View style = {{ backgroundColor: 'red', borderWidth: 2, borderColor: 'pink', width: '100%', height: '100%' }}>
-                    <Text style = {{ color: 'white' }}>{item}</Text>
-                </View>
-            )
+            var classes = this.state.classesData;
+            var classItem, isClass, x, classData;
+            // change in each renderItem
+            var day = 1;
+            var length = classes.length
+            var definiteClassTime
+    
+            for( x = 0; x < length; x++ ){
+    
+                classItem = classes[x]
+    
+                var classDay = moment( classItem.class_date ).day()
+                var classStartHour = moment( classItem.class_starting_timing ).hour()
+                var classTime = moment( classItem.class_starting_timing ).format('HH:mm')
+    
+                if( classDay === day ){
+    
+                    if( classStartHour === item ){
+                        isClass = true
+                        classData = classItem
+                        definiteClassTime = classTime
+                    }
+                    else{
+                        continue;
+                    }
+    
+                }
+                else{
+    
+                    continue;
+                    
+                }
+    
+            }
+    
+            if( isClass === true ){
+                return(
+                    <View style = {{ width: '100%', height: '100%' }}>
+                        <TouchableOpacity
+                        onPress = {()=>{
+                            this.props.navigation.navigate('ClassDetailsScreen', { "data": classData })
+                        }}>
+                            <Text>{ definiteClassTime }</Text>
+                        </TouchableOpacity>
+                    </View>
+                )
+            }
+            else{
+                return(
+                    <View style = {{ backgroundColor: 'red', borderWidth: 2, borderColor: 'pink', width: '100%', height: '100%' }}>
+                        <Text style = {{ color: 'white' }}>{item}</Text>
+                    </View>
+                )
+            }
         }
     }
 
 
     renderItemTuesday = ({ item }) => {
+
         var classes = this.state.classesData;
         var classItem, isClass, x, classData;
         // change in each renderItem
@@ -261,6 +326,7 @@ export default class TimeTable extends React.Component {
 
 
     renderItemWednesday = ({ item }) => {
+
         var classes = this.state.classesData;
         var classItem, isClass, x, classData;
         // change in each renderItem
@@ -320,6 +386,7 @@ export default class TimeTable extends React.Component {
 
 
     renderItemThursday = ({ item }) => {
+
         var classes = this.state.classesData;
         var classItem, isClass, x, classData;
         // change in each renderItem
@@ -379,6 +446,7 @@ export default class TimeTable extends React.Component {
 
 
     renderItemFriday = ({ item }) => {
+
         var classes = this.state.classesData;
         var classItem, isClass, x, classData;
         // change in each renderItem
@@ -438,6 +506,7 @@ export default class TimeTable extends React.Component {
 
 
     renderItemSaturday = ({ item }) => {
+
         var classes = this.state.classesData;
         var classItem, isClass, x, classData;
         // change in each renderItem
@@ -497,6 +566,7 @@ export default class TimeTable extends React.Component {
 
 
     renderItemSunday = ({ item }) => {
+
         var classes = this.state.classesData;
         var classItem, isClass, x, classData;
         // change in each renderItem
@@ -559,13 +629,9 @@ export default class TimeTable extends React.Component {
         return(
             <View style = {{ flex: 2 , height: '100%' }}>
 
-                <View style = {{ height: '10%' , width: '100%' }}>
+                <View style = {{ height: '8%' , width: '100%' }}>
                     <AppHeader title = "Time Table" />
-                    <TouchableOpacity onPress = {()=>{ this.fetchClassesData() }}>
-                        <Text>Run fetchClassesData</Text>
-                    </TouchableOpacity>
-                </View>
-                
+                </View>       
 
                 <View style = {{ height: '100%' }}>
 

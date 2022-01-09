@@ -91,7 +91,6 @@ export default class LoginScreen extends React.Component {
                                     this.setState({
                                         isModalVisible: false
                                     });
-                                    return alert("New user has been registered");
                                 }}>
                                   <Text>Register</Text>
                               </TouchableOpacity>
@@ -125,7 +124,7 @@ export default class LoginScreen extends React.Component {
             
         }
         else{
-
+        
             createUserWithEmailAndPassword(auth, emailID, password)
             .then( ()=>{
 
@@ -137,7 +136,7 @@ export default class LoginScreen extends React.Component {
                         password: this.state.password
                     })
 
-                    return console.log("Document ID: " + userDoc.id)
+                    return alert("New user has been registered");
                 }
                 catch(error){
                     return console.log("Error in Firestore \n" + error)
@@ -156,17 +155,23 @@ export default class LoginScreen extends React.Component {
 
 
     userLogin = async (emailID, password) => {
+        var errorCode, errorMessage;
 
         const auth = getAuth(app);
         
         signInWithEmailAndPassword(auth, emailID, password)
-        .then( ()=>{
-                    
-        })
         .catch( (error)=>{
-            var errorCode = error.code
-            var errorMessage = error.message
+            errorCode = error.code
+            errorMessage = error.message
             return alert(errorMessage)
+        })
+        .then( ()=>{
+            if(errorMessage){
+
+            }
+            else{
+                this.props.navigation.navigate('TabNavigator'); 
+            }
         });
 
     }
@@ -206,7 +211,6 @@ export default class LoginScreen extends React.Component {
                 <TouchableOpacity
                   onPress = { ()=>{
                       this.userLogin(this.state.emailID, this.state.password);
-                      this.props.navigation.navigate('TabNavigator'); 
                   }}>
                     <Text>Login</Text>
                 </TouchableOpacity>

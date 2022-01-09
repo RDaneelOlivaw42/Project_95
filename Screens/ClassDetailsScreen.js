@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, FlatList } from 'react-native';
-import AppHeader from '../Components/AppHeader';
+import ClassDetailsHeader from '../Components/ClassDetailsHeader';
 import moment from 'moment';
 import app from '../config';
 import { getFirestore, deleteDoc, collection, where, query, addDoc, getDocs, limit, doc } from 'firebase/firestore';
@@ -93,7 +93,7 @@ export default class ClassDetailsScreen extends React.Component {
             })
         }
         else{
-            return alert("Sod off")
+            return alert("documentReference does not exist")
         }
 
         await deleteDoc( doc(db, "Scheduled Classes", docId) )
@@ -144,7 +144,7 @@ export default class ClassDetailsScreen extends React.Component {
     render(){
         return(
             <View>
-                <AppHeader title = "Class Details" />
+                <ClassDetailsHeader title = "Class Details" />
 
                 <Text>Name of Class: {this.state.className}</Text>
                 <Text>Date of Class: {this.state.classDate}</Text>
