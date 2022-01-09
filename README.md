@@ -1,4 +1,4 @@
-# Project 94
+# Project 94 - Dynamic Time Table
 
 Completed all code for functionality, only styling left.
 
