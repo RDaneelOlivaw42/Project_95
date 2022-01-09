@@ -1,22 +1,154 @@
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { Icon } from 'react-native-elements';
+import { Icon, Avatar } from 'react-native-elements';
 import { DrawerItems } from 'react-navigation-drawer';
-import { signOut, getAuth } from 'firebase/auth';
+import { signOut, getAuth, onAuthStateChanged } from 'firebase/auth';
+import { getFirestore, query, collection, where, limit, getDocs } from 'firebase/firestore';
+import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import app from '../config';
-
+import * as ImagePicker from 'expo-image-picker';
 
 export default class CustomSideBarMenu extends React.Component {
 
+
+    constructor(props){
+        super(props);
+
+        this.state = {
+            userId: '',
+            image: '',
+            userName: ''
+        }
+    }
+
+
+    componentDidMount(){
+        this.getUserId();
+    }
+
+
+    getUserId = () => {
+        const auth = getAuth(app);
+
+        onAuthStateChanged(auth, (user)=>{
+            if(user){
+                const userId = user.email
+
+                this.setState({
+                    userId: userId
+                });
+            }
+        });
+
+        this.fetchUserName();
+        this.fetchImage(this.state.userId)
+    }
+
+
+    fetchUserName = async () => {
+        const db = getFirestore(app);
+        var userId = this.state.userId
+
+        const q = query( collection(db, 'users'), where('email_id','==',userId), limit(1) )
+
+        const querySnapshot = await getDocs(q)
+
+        if(querySnapshot){
+            querySnapshot.forEach( (doc)=>{
+                
+                var data = doc.data()
+                var fetchedUserName = data.first_name + " " + data.last_name
+                this.setState({
+                    userName: fetchedUserName
+                })
+
+            })
+        }
+    }
+
+
+    selectImage = async () => {
+        const result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.All,
+            allowsEditing: true,
+            aspect: [4, 3],
+            quality: 1
+        })
+
+        if(!result.cancelled){
+
+            this.setState({
+                image: result.uri
+            })
+
+            this.uploadImage(result.uri, this.state.userId)
+
+        }
+    }
+
+
+    uploadImage = async ( uri, userId ) => {
+        var response = await fetch(uri)
+        var blob = await response.blob()
+
+        const db = getStorage(app);
+        const storageRef = ref(db, 'user_profiles/' + userId)
+
+        uploadBytes(storageRef, blob)
+        .then( ()=>{
+            this.fetchImage(userId)
+            return alert("Image has been successfully uploaded")
+        })
+    }
+
+
+    fetchImage = (userId) => {
+        const db = getStorage(app);
+        const storageRef = ref(db, 'user_profiles/' + userId)
+
+        getDownloadURL(storageRef)
+        .then( (uri)=>{
+
+            this.setState({
+                image: uri
+            })
+
+        })
+        .catch( (error)=>{
+            var errorMessage = error.errorMessage
+            var errorCode = error.code
+            console.log(errorMessage)
+        })
+    }
+
+
     render(){
+        this.fetchUserName()
+        this.fetchImage(this.state.userId)
         return(
             <View style = {styles.container}>
+
+                <View style = {styles.avatar}>
+                    <Avatar
+                        source = {{ uri: this.state.image }}
+                        rounded = {true}
+                        size = 'xlarge'
+                        onPress = {()=>{
+                            this.selectImage()
+                        }}
+                    />
+                </View>
+
+                <View>
+                    <Text>{this.state.userName}</Text>
+                </View>
 
                 <View style = {styles.drawerItemsContainer}>
                     <DrawerItems {...this.props} />
                 </View>
 
                 <View style = {styles.logOutContainer}>
+
                     <TouchableOpacity
                       style = {styles.logOutButton}
                       onPress = { ()=>{
@@ -24,6 +156,7 @@ export default class CustomSideBarMenu extends React.Component {
                           signOut(auth);
                           this.props.navigation.navigate('LoginScreen');
                       }}>
+
                         <View style = {{ flex: 2, flexDirection: 'row' }}>
 
                             <View style = {{ paddingLeft: 10, paddingRight: 28 }}>
@@ -33,7 +166,9 @@ export default class CustomSideBarMenu extends React.Component {
                             <Text style = {styles.logOutText}>Logout</Text>
 
                         </View>
+
                     </TouchableOpacity>
+
                 </View>
 
             </View>
@@ -68,6 +203,10 @@ const styles = StyleSheet.create({
 
     logOutText: {
         fontWeight: 'bold'
+    },
+
+    avatar: {
+        alignSelf: 'center'
     }
 
 })

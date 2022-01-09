@@ -13,7 +13,7 @@ export const DrawerNavigator = createDrawerNavigator({
         screen: SettingsScreen,
         navigationOptions: {
             drawerIcon: (
-                <Icon />
+                <Icon name = 'settings' type = 'fontawesome5' />
             ),
             drawerLabel: "Settings"
         }
@@ -23,7 +23,7 @@ export const DrawerNavigator = createDrawerNavigator({
         screen: TabNavigator,
         navigationOptions: {
             drawerIcon: (
-                <Icon />
+                <Icon name = 'home' type = 'fontawesome5' />
             ),
             drawerLabel: "Home"
         }
@@ -33,7 +33,7 @@ export const DrawerNavigator = createDrawerNavigator({
         screen: NotificationsScreen,
         navigationOptions: {
             drawerIcon: (
-                <Icon />
+                <Icon name = 'bell' type = 'font-awesome' />
             ),
             drawerLabel: "Notifications"
         }
