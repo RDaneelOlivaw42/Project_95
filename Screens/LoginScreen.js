@@ -1,7 +1,7 @@
 import React from "react";
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, KeyboardAvoidingView, Modal, ScrollView, Touchable } from 'react-native';
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword, getAuth } from 'firebase/auth';      
-import { getFirestore, collection, addDoc } from 'firebase/firestore';
+import { View, Text, TextInput, TouchableOpacity, KeyboardAvoidingView, Modal, ScrollView } from 'react-native';
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword, getAuth, updateProfile, sendPasswordResetEmail } from 'firebase/auth';      
+import { getFirestore, collection, addDoc, getDocs, where, limit, updateDoc, doc, query } from 'firebase/firestore';
 import app from '../config';
 
 
@@ -128,6 +128,8 @@ export default class LoginScreen extends React.Component {
             createUserWithEmailAndPassword(auth, emailID, password)
             .then( ()=>{
 
+                this.updateUserProfile()
+
                 try{
                     const userDoc = addDoc( collection(db, "users"), {
                         first_name: this.state.firstName,
@@ -154,6 +156,24 @@ export default class LoginScreen extends React.Component {
     }
 
 
+    updateUserProfile = () => {
+        const auth = getAuth(app);
+        var name = this.state.firstName + " " + this.state.lastName
+
+        updateProfile( auth.currentUser, {
+            displayName: name
+        })
+        .then(()=>{
+            console.log("added name to firebase auth")
+        }) 
+        .catch( (error)=>{
+            var errorMessage = error.message
+            var errorCode = error.code
+            return alert(errorMessage)
+        })
+    }
+
+
     userLogin = async (emailID, password) => {
         var errorCode, errorMessage;
 
@@ -165,15 +185,52 @@ export default class LoginScreen extends React.Component {
             errorMessage = error.message
             return alert(errorMessage)
         })
-        .then( ()=>{
+        .then( async ()=>{
             if(errorMessage){
 
             }
             else{
+                const db = getFirestore(app)
+                const q = query( collection(db, 'users'), where('email_id','==',emailID), limit(1) )
+                const querySnapshot = await getDocs(q)
+
+                if(querySnapshot){
+                    querySnapshot.forEach( (document)=>{
+
+                        var firestorePassword = document.data().password
+                        var docId = document.id
+
+                        if(firestorePassword !== password){
+
+                            updateDoc( doc(db, "users", docId), {
+                                password: password
+                            })
+
+                        }
+
+                    })
+                }
+
                 this.props.navigation.navigate('TabNavigator'); 
             }
         });
 
+    }
+
+
+    resetPassword = () => {
+        const auth = getAuth(app);
+        var userId = this.state.emailID
+
+        sendPasswordResetEmail(auth, userId)
+        .then( ()=>{
+            return alert("Password-reset email sent")
+        })
+        .catch( (error)=>{
+            var errorCode = error.code
+            var errorMessage = error.message
+            return alert(errorMessage)
+        })
     }
 
 
@@ -222,6 +279,13 @@ export default class LoginScreen extends React.Component {
                       })
                   }}>
                     <Text>Sign up</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity 
+                  onPress = {()=>{
+                      this.resetPassword()
+                  }}>
+                    <Text>Forgot Password?</Text>
                 </TouchableOpacity>
 
             </View>

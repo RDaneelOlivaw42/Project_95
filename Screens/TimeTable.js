@@ -1,6 +1,5 @@
 import React from 'react';
-import { View, Text, FlatList, TouchableOpacity, Touchable } from 'react-native';
-import { ListItem } from 'react-native-elements';
+import { View, Text, FlatList, TouchableOpacity, useWindowDimensions, Dimensions } from 'react-native';
 import AppHeader from '../Components/AppHeader';
 import app from '../config';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
@@ -131,6 +130,15 @@ export default class TimeTable extends React.Component {
     renderItemDays = ({ item, i }) => {
         return(
             <View style = {{ backgroundColor: 'yellow', width: '12.5%', borderColor: 'purple', borderWidth: 2 }}>
+                <Text style = {{ alignSelf: 'center' }}>{item.title}</Text>
+            </View>
+        )
+    }
+
+
+    renderItemDaysPhone = ({ item, i }) => {
+        return(
+            <View style = {{ backgroundColor: 'yellow', width: '100%', borderColor: 'purple', borderWidth: 2 }}>
                 <Text style = {{ alignSelf: 'center' }}>{item.title}</Text>
             </View>
         )
@@ -623,85 +631,172 @@ export default class TimeTable extends React.Component {
             )
         }
     }
+
+
+    whichFunctionToRender = () => {
+        var day = moment().day()
+        var renderItemThing
+
+        if( day === 1 ){
+            renderItemThing = this.renderItemMonday
+        } 
+        else if( day === 2 ){
+            renderItemThing = this.renderItemTuesday
+        }
+        else if( day === 3 ){
+            renderItemThing = this.renderItemWednesday
+        }
+        else if( day === 4 ){
+            renderItemThing = this.renderItemThursday
+        }
+        else if( day === 5 ){
+            renderItemThing = this.renderItemFriday
+        }
+        else if( day === 6 ){
+            renderItemThing = this.renderItemSaturday
+        }
+        else if( day === 0 ){
+            renderItemThing = this.renderItemSunday
+        }
+
+        return renderItemThing
+    }
+
+
+    getTodayDay = () => {
+        var date = new Date()
+        var weekday = date.getDay()
+        var options = { weekday: 'long' }
+        var day = new Intl.DateTimeFormat('en-US', options).format(date)
+        var dayObject = {
+                title: day,
+                id: "0"
+            }
+        var data = []
+        data.push(dayObject)
+        return data;
+    }
  
 
     render(){
-        return(
-            <View style = {{ flex: 2 , height: '100%' }}>
+        if( Dimensions.get('window').width >= 826 ){
 
-                <View style = {{ height: '8%' , width: '100%' }}>
-                    <AppHeader title = "Time Table" />
-                </View>       
+            return(
+                <View style = {{ flex: 2 , height: '100%' }}>
+    
+                    <View style = {{ width: '100%' }}>
+                        <AppHeader title = "Time Table" />
+                    </View>       
+    
+                    <View style = {{ height: '100%' }}>
+    
+                        <View style = {{ width: '100%' }}>
+    
+                            <FlatList 
+                                data = {days}
+                                renderItem = {this.renderItemDays}
+                                keyExtractor = {this.keyExtractor}
+                                numColumns = {8}
+                            />
+    
+                        </View>
+    
+                        <View style = {{ flex: 7, flexDirection: 'row', height: '100%' }}>
+    
+                                <FlatList 
+                                    data = {this.getVisibleHours()}
+                                    renderItem = {this.renderItemHours}
+                                    keyExtractor = {this.keyExtractor}
+                                />
+    
+                                <FlatList
+                                    data = {this.getVisibleHours()}
+                                    renderItem = {this.renderItemMonday}
+                                    keyExtractor = {this.keyExtractor}
+                                />
+    
+                                <FlatList
+                                    data = {this.getVisibleHours()}
+                                    renderItem = {this.renderItemTuesday}
+                                    keyExtractor = {this.keyExtractor}
+                                />
+    
+                                <FlatList
+                                    data = {this.getVisibleHours()}
+                                    renderItem = {this.renderItemWednesday}
+                                    keyExtractor = {this.keyExtractor}
+                                />
+    
+                                <FlatList
+                                    data = {this.getVisibleHours()}
+                                    renderItem = {this.renderItemThursday}
+                                    keyExtractor = {this.keyExtractor}
+                                />
+    
+                               <FlatList
+                                    data = {this.getVisibleHours()}
+                                    renderItem = {this.renderItemFriday}
+                                    keyExtractor = {this.keyExtractor}
+                                />
+    
+                                <FlatList
+                                    data = {this.getVisibleHours()}
+                                    renderItem = {this.renderItemSaturday}
+                                    keyExtractor = {this.keyExtractor}
+                                />
+    
+                                <FlatList
+                                    data = {this.getVisibleHours()}
+                                    renderItem = {this.renderItemSunday}
+                                    keyExtractor = {this.keyExtractor}
+                                />
+    
+                        </View>
+    
+                    </View>
+    
+                </View>
+            )
 
+        }
+        else{
+
+            return(
                 <View style = {{ height: '100%' }}>
 
                     <View style = {{ width: '100%' }}>
-
-                        <FlatList 
-                            data = {days}
-                            renderItem = {this.renderItemDays}
-                            keyExtractor = {this.keyExtractor}
-                            numColumns = {8}
-                        />
-
+                        <AppHeader title = "Time Table" />
                     </View>
 
-                    <View style = {{ flex: 7, flexDirection: 'row', height: '100%' }}>
+                    <View style = {{ width: '100%'}}>
 
-                            <FlatList 
-                                data = {this.getVisibleHours()}
-                                renderItem = {this.renderItemHours}
-                                keyExtractor = {this.keyExtractor}
-                            />
+                        <View style = {{ width: '70%', alignSelf: 'center' }}>
+ 
+                            <View>
+                                <FlatList
+                                    data = {this.getTodayDay()}
+                                    renderItem = {this.renderItemDaysPhone}
+                                    keyExtractor = {this.keyExtractor}
+                                />
+                            </View>
 
-                            <FlatList
-                                data = {this.getVisibleHours()}
-                                renderItem = {this.renderItemMonday}
-                                keyExtractor = {this.keyExtractor}
-                            />
+                            <View>
+                                <FlatList
+                                    data = {this.getVisibleHours()}
+                                    renderItem = {this.whichFunctionToRender()}
+                                    keyExtractor = {this.keyExtractor}
+                                />
+                            </View>
 
-                            <FlatList
-                                data = {this.getVisibleHours()}
-                                renderItem = {this.renderItemTuesday}
-                                keyExtractor = {this.keyExtractor}
-                            />
-
-                            <FlatList
-                                data = {this.getVisibleHours()}
-                                renderItem = {this.renderItemWednesday}
-                                keyExtractor = {this.keyExtractor}
-                            />
-
-                            <FlatList
-                                data = {this.getVisibleHours()}
-                                renderItem = {this.renderItemThursday}
-                                keyExtractor = {this.keyExtractor}
-                            />
-
-                           <FlatList
-                                data = {this.getVisibleHours()}
-                                renderItem = {this.renderItemFriday}
-                                keyExtractor = {this.keyExtractor}
-                            />
-
-                            <FlatList
-                                data = {this.getVisibleHours()}
-                                renderItem = {this.renderItemSaturday}
-                                keyExtractor = {this.keyExtractor}
-                            />
-
-                            <FlatList
-                                data = {this.getVisibleHours()}
-                                renderItem = {this.renderItemSunday}
-                                keyExtractor = {this.keyExtractor}
-                            />
+                        </View>
 
                     </View>
 
                 </View>
+            )
 
-            </View>
-        )
+        }
+
     }
 
 }

@@ -3,7 +3,7 @@ import { View, Text, TextInput, TouchableOpacity } from 'react-native';
 import AppHeader from '../Components/AppHeader';
 import app from '../config';
 import { getFirestore, collection, getDocs, where, query, limit, setDoc, doc, deleteDoc } from 'firebase/firestore';
-import { getAuth, onAuthStateChanged, updatePassword, deleteUser, reauthenticateWithCredential, EmailAuthProvider } from 'firebase/auth'
+import { getAuth, onAuthStateChanged, updatePassword, deleteUser, reauthenticateWithCredential, EmailAuthProvider, updateProfile } from 'firebase/auth'
 
 export default class SettingsScreen extends React.Component {
 
@@ -132,10 +132,12 @@ export default class SettingsScreen extends React.Component {
 
     updateUserProfile = async () => {
         const db = getFirestore(app);
+        const auth = getAuth(app);
+        const user = auth.currentUser;
         var docId = this.state.docId;
         const documentReference = doc(db, "users", docId);
         var userId = this.state.emailId;
-        var password, firstName, lastName;
+        var password, firstName, lastName, name;
 
         if( this.state.newPassword ){
             password = this.state.newPassword
@@ -164,6 +166,20 @@ export default class SettingsScreen extends React.Component {
             password: password,
             email_id: userId
         });
+
+        name = firstName + " " + lastName
+
+        updateProfile(user, {
+            displayName: name
+        })
+        .then( ()=>{
+
+        })
+        .catch( (error)=>{
+            var errorMessage = error.message
+            var errorCode = error.code
+            alert(errorMessage)
+        })
 
     }
 

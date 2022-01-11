@@ -17,13 +17,14 @@ export default class CustomSideBarMenu extends React.Component {
         this.state = {
             userId: '',
             image: '',
-            userName: ''
+            fetchedNameFirebase: ''
         }
     }
 
 
     componentDidMount(){
-        this.getUserId();
+        this.getUserId()
+        this.fetchImage(this.state.userId)
     }
 
 
@@ -33,37 +34,16 @@ export default class CustomSideBarMenu extends React.Component {
         onAuthStateChanged(auth, (user)=>{
             if(user){
                 const userId = user.email
+                const userName = user.displayName
 
                 this.setState({
-                    userId: userId
+                    userId: userId,
+                    fetchedNameFirebase: userName
                 });
             }
         });
 
-        this.fetchUserName();
         this.fetchImage(this.state.userId)
-    }
-
-
-    fetchUserName = async () => {
-        const db = getFirestore(app);
-        var userId = this.state.userId
-
-        const q = query( collection(db, 'users'), where('email_id','==',userId), limit(1) )
-
-        const querySnapshot = await getDocs(q)
-
-        if(querySnapshot){
-            querySnapshot.forEach( (doc)=>{
-                
-                var data = doc.data()
-                var fetchedUserName = data.first_name + " " + data.last_name
-                this.setState({
-                    userName: fetchedUserName
-                })
-
-            })
-        }
     }
 
 
@@ -123,7 +103,6 @@ export default class CustomSideBarMenu extends React.Component {
 
 
     render(){
-        this.fetchUserName()
         this.fetchImage(this.state.userId)
         return(
             <View style = {styles.container}>
@@ -140,7 +119,7 @@ export default class CustomSideBarMenu extends React.Component {
                 </View>
 
                 <View>
-                    <Text>{this.state.userName}</Text>
+                    <Text>Welcome, {this.state.fetchedNameFirebase}</Text>
                 </View>
 
                 <View style = {styles.drawerItemsContainer}>
