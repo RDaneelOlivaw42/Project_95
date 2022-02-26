@@ -10,22 +10,24 @@ class ClassDetailsHeader extends React.Component {
         return(
             <SafeAreaProvider>
                 <Header 
-                    backgroundColor = 'blue'
+                    backgroundColor = '#2C4A52'
+                    style = {{ padding: 20 }}
 
                     leftComponent = {
                         <Icon
                           type = 'font-awesome'
                           name = 'chevron-left'
-                          style = {{ paddingLeft: 15, paddingTop: 10 }} 
+                          style = {{ paddingLeft: 15, paddingTop: 6 }} 
                           onPress = { ()=>{
                               this.props.navigation.goBack()
                           }}
+                          color = {'#F4EBDB'}
                         />
                     }
 
                     centerComponent = {{
                         text: this.props.title,
-                        style: { fontSize: 30, textAlign: 'center' }
+                        style: { fontSize: 30, textAlign: 'center', color: '#F4EBDB', fontFamily: 'Lora-Regular' }
                     }}
                 />
             </SafeAreaProvider>

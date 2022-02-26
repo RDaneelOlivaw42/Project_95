@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, FlatList } from 'react-native';
+import { View, Text, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
 import { ListItem, Icon } from 'react-native-elements';
 import AppHeader from '../Components/AppHeader';
 import app from '../config';
@@ -18,7 +18,9 @@ export default class NotificationsScreen extends React.Component {
             userId: '',
             classesData: [],
             notificationsData: [],
-            ranFunction: 0
+            runFetchClassesData: 0,
+            runCheckToSendNotification: 0,
+            runFetchNotifications: 0
         }
     }
 
@@ -27,6 +29,21 @@ export default class NotificationsScreen extends React.Component {
         this.getUserId();
         this.fetchClassesData();
         this.checkToSendNotification();
+    }
+
+
+    componentDidUpdate(){
+        if( this.state.runFetchNotifications === 0 ){
+            this.fetchNotifications()
+        }
+
+        if( this.state.runFetchClassesData === 0 ){
+            this.fetchClassesData()
+        }
+        
+        if( this.state.runCheckToSendNotification === 0 ){
+            this.checkToSendNotification()
+        }
     }
 
 
@@ -58,7 +75,8 @@ export default class NotificationsScreen extends React.Component {
 
                 var updatedClassesData = querySnapshot.docs.map( document => document.data() )
                 this.setState({
-                    classesData: updatedClassesData
+                    classesData: updatedClassesData,
+                    runFetchClassesData: 1
                 })
 
             })
@@ -119,6 +137,10 @@ export default class NotificationsScreen extends React.Component {
 
         }
 
+        this.setState({
+            runCheckToSendNotification: 1
+        })
+
     }
 
 
@@ -140,7 +162,7 @@ export default class NotificationsScreen extends React.Component {
         const db = getFirestore(app)
         var userId = this.state.userId
         
-        const q = query( collection(db, 'All Notifications'), where('user_id','==',userId) )
+        const q = query( collection(db, 'All Notifications'), where('user_id','==',userId), where('mark_as_read','==',false) )
 
         const querySnapshot = await getDocs(q)
 
@@ -157,6 +179,10 @@ export default class NotificationsScreen extends React.Component {
         else{
             console.log("No notifications")
         }
+
+        this.setState({
+            runFetchNotifications: 1
+        })
     }
 
 
@@ -195,24 +221,61 @@ export default class NotificationsScreen extends React.Component {
 
 
     renderItem = ({ i, item }) => {
-        console.log(item)
         return(
-            <ListItem key = {i} bottomDivider = {true}>
-                <ListItem.Content style = {{ backgroundColor: 'yellow' }}>
+            <ListItem.Swipeable 
 
+                leftContent = {
+                    <View style = {styles.centreAlign}>
+                       <TouchableOpacity  
+                            style = {styles.leftContent}
+                            onPress = {()=>{
+                                this.markNotificationAsRead(item)
+                            }}>
 
-                    <ListItem.Title>{item.class_name}</ListItem.Title>
+                                <View style = {styles.centreAlign}>
+                                   <Text>
+                                       <Text style = {styles.swipeText}>Mark as read  </Text>
+                                       <Icon type = 'font-awesome' name = 'check-circle' color = '#F1DCC9' size = {30}  />
+                                    </Text>
+                                </View>
 
-                    <ListItem.Subtitle>{item.message}</ListItem.Subtitle>
+                        </TouchableOpacity>
+                    </View>
+                }
 
-                    <TouchableOpacity onPress = {()=>{
-                        this.markNotificationAsRead(item)
-                    }}>
-                        <Text>Mark as read</Text>
-                    </TouchableOpacity>
+                rightContent = {
+                    <View style = {styles.centreAlign}>
+                        <TouchableOpacity 
+                            style = {styles.rightContent}
+                            onPress = {()=>{
+                                this.markNotificationAsRead(item)
+                            }}>
+
+                               <View style = {styles.centreAlign}>
+                                   <Text>
+                                       <Text style = {styles.swipeText}>Mark as read  </Text>
+                                       <Icon type = 'font-awesome' name = 'check-circle' color = '#F1DCC9' size = {30}  />
+                                    </Text>
+                                </View>
+
+                        </TouchableOpacity>
+                    </View>
+                }>
+
+                <ListItem.Content style = {styles.listItemContainer}>
+
+                    <View>
+                        <Icon name = 'envelope' type = 'font-awesome-5' color = '#F1DCC9' size = {30} />
+                    </View>
+
+                    <View style = {{ marginLeft: '1.2%' }}> 
+                        <ListItem.Title style = {styles.listItemTitle}>{item.class_name}</ListItem.Title>
+                        <ListItem.Subtitle style = {styles.listItemSubtitle}>{item.message}</ListItem.Subtitle>
+                    </View>
 
                 </ListItem.Content>
-            </ListItem>
+
+            </ListItem.Swipeable>
         )
     }
 
@@ -220,67 +283,93 @@ export default class NotificationsScreen extends React.Component {
     render(){
         return(
             <View>
+            <AppHeader title = "Notifications" />
 
-                <AppHeader title = "Notifications" />
-                
-                <View>
 
-                    <View>
-                        {
-                            this.state.ranFunction > 0 ?
-                            (
-                                this.state.notificationsData.length === 0 ?
-                                (
-                                    <View>
-                                        <Text>You have no notifications</Text>
-                                    </View>
-                                )
-                                : (
-                                    <View>
-
-                                        <View>
-                                            <Text>
-                                            <Text>Read Notifications</Text>
-                                            <Icon name = 'sort-desc' type = 'font-awesome' color = '#696969' />
-                                            </Text>
-                                        </View>
-
-                                        <FlatList 
-                                            data = {this.state.notificationsData}
-                                            renderItem = {this.renderItem}
-                                            keyExtractor = {this.keyExtractor}
-                                        />
-
-                                    </View>
-                                )
-                            )
-                            : (
-                                <View>
-        
-                                    <TouchableOpacity
-                                        onPress = {()=>{
-                                            this.fetchClassesData()
-                                            this.checkToSendNotification()
-                                            this.fetchNotifications()
-                                            this.setState({
-                                                ranFunction: 1
-                                            })
-                                        }}>
-                                            <View style = {{ display: 'flex', flex: 2, flexDirection: 'row' }}>
-                                                <Text>Unread Notifications</Text>
-                                                <Icon name = 'sort-up' type = 'font-awesome' color = '#696969'/>
-                                            </View>
-                                    </TouchableOpacity>
-    
-                                </View>
-                            )
-                        }
+            {
+                this.state.notificationsData.length === 0 ?
+                (
+                    <View style = {styles.nullNotificationsContainer}>
+                        <Text style = {{ fontFamily: 'Lora', fontSize: 17 }}>You have no notifications</Text>
                     </View>
+                )
+                : (
+                    <View style = {{ marginLeft: '3%', marginTop: '0.6%', marginRight: '3%' }}>
 
-                </View>
+                        <View>
+                            <Text>
+                            <Text style = {{ fontFamily: 'Lora', fontSize: 17 }}>Notifications </Text>
+                            <Icon name = 'sort-desc' type = 'font-awesome' color = '#696969' size = {35} />
+                            </Text>
+                        </View>
 
+                        <FlatList 
+                            data = {this.state.notificationsData}
+                            renderItem = {this.renderItem}
+                            keyExtractor = {this.keyExtractor}
+                            scrollEnabled = {true}
+                        />
+
+                    </View>
+                )
+            }
             </View>
         )
     }
 
 }
+
+const styles = StyleSheet.create({
+
+    centreAlign: {
+        flex: 1, 
+        justifyContent: 'center'
+    },
+
+    leftContent: {
+        alignItems: 'flex-start', 
+        backgroundColor: '#021C1E', 
+        paddingLeft: '5%', 
+        minHeight: '68%'
+    },
+
+    rightContent: {
+        alignItems: 'flex-end', 
+        backgroundColor: '#021C1E', 
+        paddingRight: '5%', 
+        minHeight: '68%'
+    },
+
+    swipeText: {
+        fontFamily: 'Lora', 
+        color: '#F1DCC9', 
+        fontSize: 17
+    },
+
+    listItemContainer: {
+        backgroundColor: 'rgba(44, 120, 115, 0.7)', 
+        paddingVertical: 13, 
+        paddingHorizontal: 15, 
+        flex: 2, 
+        flexDirection: 'row', 
+        justifyContent: 'flex-start'
+    },
+
+    listItemTitle: {
+        fontFamily: 'Lora', 
+        fontWeight: 'bold', 
+        color: '#021C1E', 
+        fontSize: 18 
+    },
+
+    listItemSubtitle: {
+        fontFamily: 'Lora', 
+        color: 'rgba(2, 28, 30, 0.6)'
+    },
+
+    nullNotificationsContainer: {
+        marginLeft: '3%', 
+        marginTop: '1.5%'
+    }
+
+})

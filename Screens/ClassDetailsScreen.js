@@ -1,10 +1,16 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, FlatList } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Dimensions, ScrollView } from 'react-native';
+import { TextInputMask } from 'react-native-masked-text';
+import { Icon, Input, Card } from 'react-native-elements';
 import ClassDetailsHeader from '../Components/ClassDetailsHeader';
 import moment from 'moment';
 import app from '../config';
 import { getFirestore, deleteDoc, collection, where, query, addDoc, getDocs, limit, doc } from 'firebase/firestore';
 moment().format();
+import { LinearGradient } from 'expo-linear-gradient';
+
+const height = Dimensions.get('window').height
+const width = Dimensions.get('window').width
 
 export default class ClassDetailsScreen extends React.Component {
 
@@ -141,32 +147,171 @@ export default class ClassDetailsScreen extends React.Component {
     }
 
 
+    textInput = (value) => {
+        return(
+            <TextInputMask 
+                style = {styles.textInput}
+                value = {value}
+            />
+        )
+    }
+
+
     render(){
         return(
             <View>
                 <ClassDetailsHeader title = "Class Details" />
 
-                <Text>Name of Class: {this.state.className}</Text>
-                <Text>Date of Class: {this.state.classDate}</Text>
-                <Text>Class Starts at: {this.returnClassStartTime()}</Text>
-                <Text>Class Ends at: {this.returnClassEndTime()}</Text>
-                <Text>Class Duration: {this.returnClassDuration()}</Text>
-                <Text>Other Details: {this.state.otherDetails}</Text>
+            <View style = {styles.container}>
+            <ScrollView style = {{ width: '100%' }}>
 
-                <TouchableOpacity onPress = {()=>{
-                    this.deleteClass();
-                }}>
-                    <Text>Cancel Class</Text>
-                </TouchableOpacity>
+            <Card containerStyle = {styles.cardContainer}>
+                <Text>
+                    <Icon type = 'font-awesome' name = 'graduation-cap' color = {'#F4EBDB'} size = {22} />
+                    <Card.Title style = {styles.title}>   Name of Class:</Card.Title>
+                    <Text style = {styles.value}>  {this.state.className}</Text>
+                </Text>
 
-                <TouchableOpacity onPress = {()=>{
-                    this.classAttended();
-                }}>
-                    <Text>Attended Class</Text>
-                </TouchableOpacity>
+                <View style = {styles.line} />
+            </Card>
+
+            <Card containerStyle = {styles.cardContainer}>
+                <Text>
+                    <Icon type = 'font-awesome' name = 'calendar' color = {'#F4EBDB'} size = {22} />
+                    <Card.Title style = {styles.title}>   Date of Class:</Card.Title>
+                    <Text style = {styles.value}>  {this.state.classDate}</Text>
+                </Text>
+
+                <View style = {styles.line} />
+            </Card>
+
+            <Card containerStyle = {styles.cardContainer}>
+                <Text>
+                    <Icon type = 'font-awesome' name = 'hourglass-start' color = {'#F4EBDB'} size = {22} />
+                    <Card.Title style = {styles.title}>   Class Starts at (in 24-hour clock):</Card.Title>
+                    <Text style = {styles.value}>  {this.returnClassStartTime()}</Text>
+                </Text>
+
+                <View style = {styles.line} />
+            </Card>
+
+            <Card containerStyle = {styles.cardContainer}>
+                <Text>
+                    <Icon type = 'font-awesome' name = 'hourglass-end' color = {'#F4EBDB'} size = {22} />
+                    <Card.Title style = {styles.title}>   Class Ends at (in 24-hour clock):</Card.Title>
+                    <Text style = {styles.value}>  {this.returnClassEndTime()}</Text>
+                </Text>
+
+                <View style = {styles.line} />
+            </Card>
+
+            <Card containerStyle = {styles.cardContainer}>
+                <Text>
+                    <Icon type = 'font-awesome' name = 'clock-o' color = {'#F4EBDB'} size = {22} />
+                    <Card.Title style = {styles.title}>   Class Duration:</Card.Title>
+                    <Text style = {styles.value}>  {this.returnClassDuration()}</Text>
+                </Text>
+
+                <View style = {styles.line} />
+            </Card>
+
+            <Card containerStyle = {styles.cardContainer}>
+                <Text>
+                    <Icon type = 'font-awesome' name = 'map' color = {'#F4EBDB'} size = {22} />
+                    <Card.Title style = {styles.title}>   Other Details:</Card.Title>
+                    <Text style = {styles.value}>  {this.state.otherDetails}</Text>
+                </Text>
+
+                <View style = {styles.line} />
+            </Card>
+
+            </ScrollView>
+
+            <View style = {styles.buttonsContainer}>
+            <TouchableOpacity 
+            style = {[ styles.button, { marginRight: 60 } ]}
+            onPress = {()=>{
+                this.deleteClass();
+            }}>
+                <Text style = {styles.buttonText}>Cancel Class</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity 
+            style = {styles.button}
+            onPress = {()=>{
+                this.classAttended();
+            }}>
+                <Text style = {styles.buttonText}>Attended Class</Text>
+            </TouchableOpacity>
+            </View>
+
+            </View>
 
             </View>
         )
     }
 
 }
+
+
+const styles = StyleSheet.create({
+
+    title: {
+        fontFamily: 'Lora',
+        fontSize: 14,
+        fontWeight: 'bold',
+        color: '#F4EBDB',
+    },
+
+    value: {
+        fontFamily: 'Lora',
+        fontSize: 14,
+        color: '#F4EBDB',
+    },
+
+    cardContainer: {
+        backgroundColor: 'rgba(44, 120, 115, 0.7)',
+        width: '85%',
+        alignSelf: 'center',
+        marginTop: 30
+    },
+
+    line: {
+        width: '100%', 
+        backgroundColor: '#F4EBDB', 
+        height: 1,
+        marginTop: 10
+    },
+
+    button: {
+        alignSelf: 'center',
+        backgroundColor: '#021C1E',
+        paddingVertical: 15,
+        shadowColor: '#2C4A52',
+        shadowOffset: { width: 4, height: 4 },
+        shadowRadius: 5,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 30,
+        paddingHorizontal: 20
+    },
+
+    buttonText: {
+        fontFamily: 'Lora',
+        fontSize: 20,
+        color: '#F4EBDB'
+    },
+
+    container: {
+        marginTop: '0.5%',
+        alignItems: 'center'
+    },
+
+    buttonsContainer: {
+        flex: 2,
+        flexDirection: 'row',
+        alignItems: 'center',
+
+    }
+
+})

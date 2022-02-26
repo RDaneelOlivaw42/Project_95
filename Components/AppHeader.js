@@ -2,6 +2,7 @@ import React from 'react';
 import { Header, Icon, Badge } from 'react-native-elements';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { DrawerActions } from 'react-navigation-drawer';
+import { StyleSheet } from 'react-native';
 import { withNavigation } from 'react-navigation';
 import app from '../config';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
@@ -71,7 +72,7 @@ class AppHeader extends React.Component {
             return(
                 <SafeAreaProvider>
 
-                    <Icon type = 'font-awesome' name = 'bell' size = {30} 
+                    <Icon type = 'font-awesome' name = 'bell' size = {28} color = {'#F4EBDB'} style = {{ paddingRight: 9, paddingTop: 3 }}
                           onPress = {()=>{ this.props.navigation.navigate('NotificationsScreen') }} />
 
                 </SafeAreaProvider>
@@ -80,13 +81,13 @@ class AppHeader extends React.Component {
         else{
             return(
                 <SafeAreaProvider>
-                    <Icon type = 'font-awesome' name = 'bell' size = {30} 
+                    <Icon type = 'font-awesome' name = 'bell' size = {28} color = {'#F4EBDB'} style = {{ paddingRight: 9, paddingTop: 3 }}
                           onPress = {()=>{ this.props.navigation.navigate('NotificationsScreen') }} />
     
                     <Badge 
                         value = {this.state.value}
                         status = "error"
-                        containerStyle = {{ position: 'absolute', top: 1, right: 2 }}
+                        containerStyle = {{ position: 'absolute', top: 1, right: 5 }}
                     />
                 </SafeAreaProvider>
             )
@@ -100,16 +101,18 @@ class AppHeader extends React.Component {
         return(
             <SafeAreaProvider>
                 <Header 
-                    backgroundColor = 'blue'
+                    backgroundColor = '#2C4A52'
+                    style = {styles.background}
 
                     leftComponent = {
                         <Icon
                           type = 'font-awesome'
                           name = 'bars'
-                          style = {{ paddingLeft: 15, paddingTop: 10 }} 
+                          style = {{ paddingLeft: 15, paddingTop: 7 }} 
                           onPress = { ()=>{
                               this.props.navigation.dispatch(DrawerActions.toggleDrawer());
                           }}
+                          color = {'#F4EBDB'}
                         />
                     }
 
@@ -117,7 +120,7 @@ class AppHeader extends React.Component {
 
                     centerComponent = {{
                         text: this.props.title,
-                        style: { fontSize: 30, textAlign: 'center' }
+                        style: { fontSize: 30, textAlign: 'center', color: '#F4EBDB', fontFamily: 'Lora-Regular' }
                     }}
                 />
             </SafeAreaProvider>
@@ -127,3 +130,12 @@ class AppHeader extends React.Component {
 }
 
 export default withNavigation(AppHeader);
+
+
+const styles = StyleSheet.create({
+
+    background: {
+        padding: 20
+    },
+
+})

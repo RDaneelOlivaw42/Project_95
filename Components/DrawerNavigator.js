@@ -35,7 +35,8 @@ export const DrawerNavigator = createDrawerNavigator({
             drawerIcon: (
                 <Icon name = 'bell' type = 'font-awesome' />
             ),
-            drawerLabel: "Notifications"
+            drawerLabel: "Notifications",
+            drawerLockMode: 'locked-closed'
         }
     }
 

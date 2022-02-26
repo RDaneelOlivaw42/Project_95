@@ -1,14 +1,15 @@
 import React from "react";
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView } from 'react-native';
 import AppHeader from "../Components/AppHeader";
 import app from "../config";
 import { getFirestore, addDoc, collection } from 'firebase/firestore';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { Input } from 'react-native-elements';
 import { TextInputMask } from 'react-native-masked-text';
-import { Timestamp } from "firebase/firestore/lite";
 import moment from 'moment';
 moment().format();
+var momentito = require('moment-timezone')
+var inputBg = '#4D648D'
 
 
 export default class FormScreen extends React.Component {
@@ -58,6 +59,7 @@ export default class FormScreen extends React.Component {
             if(this.state.isDateValid === true){
 
                 const db = getFirestore(app);
+                var location = moment.tz.guess()
 
                 var classDate = this.state.classDate;
                 var classStartingTiming = this.state.classStartingTiming;
@@ -66,9 +68,13 @@ export default class FormScreen extends React.Component {
                 var classStart = classDate + " " + classStartingTiming
                 var classEnd = classDate + " " + classEndingTiming
         
-                var classStartMoment = moment(classStart, 'DD-MM-YYYY HH:mm').format();
-                var classEndMoment = moment(classEnd, 'DD-MM-YYYY HH:mm').format();
-                var classDateMoment = moment(classDate, 'DD-MM-YYYY').format();
+                var classStartDraft = moment.tz(classStart, 'DD-MM-YYYY HH:mm', location)
+                var classEndDraft = moment.tz(classEnd, 'DD-MM-YYYY HH:mm', location)
+                var classDateDraft = moment.tz(classDate, 'DD-MM-YYYY', location)
+
+                var classStartMoment = classStartDraft.format()
+                var classEndMoment = classEndDraft.format()
+                var classDateMoment = classDateDraft.format()
 
                 try{
     
@@ -110,7 +116,9 @@ export default class FormScreen extends React.Component {
     classDateField = () => {
         return(
             <TextInputMask 
+                style = {styles.textInputMask}
                 placeholder = {'DD-MM-YYYY'}
+                placeholderTextColor = {'#F1DCC9'}
                 type = {'datetime'}
                 options = {{
                     format: 'DD-MM-YYYY'
@@ -134,7 +142,9 @@ export default class FormScreen extends React.Component {
     classStartingTiming = () => {
         return(
             <TextInputMask
-                placeholder = {'Hours:Minutes'}
+                style = {styles.textInputMask}
+                placeholder = {'HR:MIN'}
+                placeholderTextColor = {'#F1DCC9'}
                 type = {'datetime'}
                 options = {{
                     format: 'HH:mm'
@@ -155,7 +165,9 @@ export default class FormScreen extends React.Component {
     classEndingTiming = () => {
         return(
             <TextInputMask
-                placeholder = {'Hours:Minutes'}
+                style = {styles.textInputMask}
+                placeholder = {'HR:MIN'}
+                placeholderTextColor = {'#F1DCC9'}
                 type = {'datetime'}
                 options = {{
                     format: 'HH:mm'
@@ -173,56 +185,99 @@ export default class FormScreen extends React.Component {
     }
 
 
+    classNameField = () => {
+        return(
+            <TextInput 
+                style = {styles.textInputMask}
+                placeholder = {'Class Name'}
+                placeholderTextColor = {'#F1DCC9'}
+                onChangeText = {(text)=>{
+                    this.setState({
+                        className: text
+                    })
+                }}
+                value = {this.state.className}
+            />
+        )
+    }
+
+
+    otherDetailsField = () => {
+        return(
+            <TextInput
+                style = {styles.textInputMask}
+                placeholder = {'Other necessary details for the class'}
+                placeholderTextColor = {'#F1DCC9'}
+                onChangeText = { (text)=>{
+                    this.setState({
+                        otherDetails: text
+                    })
+                }}
+                value = {this.state.otherDetails}
+            />
+        )
+    }
+
+
     render(){
         return(
             <View>
                 <AppHeader title = "Schedule Class" />
 
-                <View>
+                <View style = {styles.view}>
+
+                    <ScrollView style = {{ width: '100%' }} contentContainerStyle = {{ alignItems: 'center' }}>
 
                     <Input 
-                        placeholder = {'Class Name'}
-                        onChangeText = {(text)=>{
-                            this.setState({
-                                className: text
-                            })
-                        }}
-                        value = {this.state.className}
                         label = {'Class Name'}
+                        labelStyle = {styles.label}
+                        InputComponent = {this.classNameField}
+                        leftIcon = {{ type: 'font-awesome', name: 'graduation-cap', color: '#F4EBDB', size: 22 }}
+                        autoFocus = {true}
+                        containerStyle = {styles.input}
                     />
 
                     <Input
                         label = {'Class Date'}
+                        labelStyle = {styles.label}
                         InputComponent = {this.classDateField}
+                        leftIcon = {{ type: 'font-awesome', name: 'calendar', color: '#F4EBDB', size: 22 }}
+                        containerStyle = {styles.input}
                     />
 
                     <Input
                         label = {'Class Starts at (in 24-hour clock)'}
+                        labelStyle = {styles.label}
                         InputComponent = {this.classStartingTiming}
+                        containerStyle = {styles.input}
+                        leftIcon = {{ type: 'font-awesome', name: 'hourglass-start', color: '#F4EBDB', size: 22 }}
                     />
 
                     <Input
                         label = {'Class Ends at (in 24-hour clock)'}
+                        labelStyle = {styles.label}
                         InputComponent = {this.classEndingTiming}
+                        containerStyle = {styles.input}
+                        leftIcon = {{ type: 'font-awesome', name: 'hourglass-end', color: '#F4EBDB', size: 22 }}
                     />
 
                     <Input
-                        placeholder = {'Other necessary details for the class'}
-                        onChangeText = { (text)=>{
-                            this.setState({
-                                otherDetails: text
-                            })
-                        }}
-                        value = {this.state.otherDetails}
-                        label = {'Other details'}
+                        label = {'Other Details'}
+                        labelStyle = {styles.label}
+                        InputComponent = {this.otherDetailsField}
+                        containerStyle = {styles.input}
+                        leftIcon = {{ type: 'font-awesome', name: 'map', color: '#F4EBDB', size: 22 }}
                     />
 
                     <TouchableOpacity
+                      style = {styles.button}
                       onPress = {()=>{
                           this.scheduleClass();
                       }}>
-                        <Text>Schedule Class</Text>
+                        <Text style = {styles.buttonText}>Schedule Class</Text>
                     </TouchableOpacity>
+
+                    </ScrollView>
 
                 </View>
 
@@ -231,3 +286,53 @@ export default class FormScreen extends React.Component {
     }
 
 }
+
+const styles = StyleSheet.create({
+
+    view: {
+        display: 'flex',
+        flex: 6,
+        marginTop: '0.5%',
+        alignItems: 'center'
+    },
+
+    textInputMask: {
+        width: '100%',
+        fontSize: 15,
+        fontFamily: 'Lora-Regular',
+        padding: 10,
+        opacity: 0.68,
+        borderBottomColor: '#F4EBDB',
+        borderBottomWidth: 1
+    },
+
+    label: {
+        color: '#F4EBDB',
+        fontFamily: 'Lora',
+        fontSize: 15,
+        marginTop: 2
+    },
+
+    input: {
+        marginBottom: 40, 
+        backgroundColor: 'rgba(44, 120, 115, 0.7)',
+        borderRadius: 3,
+        width: '85%'
+    },
+
+    button: {
+        backgroundColor: '#021C1E',
+        paddingHorizontal: 20,
+        paddingVertical: 15,
+        shadowColor: '#2C4A52',
+        shadowOffset: { width: 4, height: 4 },
+        shadowRadius: 5
+    },
+
+    buttonText: {
+        fontFamily: 'Lora',
+        fontSize: 20,
+        color: '#F4EBDB'
+    }
+
+})

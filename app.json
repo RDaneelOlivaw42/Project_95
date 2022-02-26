@@ -1,6 +1,11 @@
 {
   "expo": {
     "name": "DynamicTimeTable",
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
     "slug": "DynamicTimeTable",
     "version": "1.0.0",
     "orientation": "portrait",

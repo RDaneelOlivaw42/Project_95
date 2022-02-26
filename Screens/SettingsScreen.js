@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, TextInput, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { Icon } from 'react-native-elements';
 import AppHeader from '../Components/AppHeader';
 import app from '../config';
 import { getFirestore, collection, getDocs, where, query, limit, setDoc, doc, deleteDoc } from 'firebase/firestore';
@@ -217,53 +218,119 @@ export default class SettingsScreen extends React.Component {
         return(
             <View>
                 <AppHeader title = "Settings" />
-                <Text>SettingsScreen</Text>
+
+                <View style = {styles.view}>
+
+                <ScrollView style = {{ width: '100%' }} contentContainerStyle = {{ alignItems: 'center' }}>
+                <Icon type = 'font-awesome' name = 'cogs' size = {75} />
 
                 <TextInput 
                    placeholder = {this.state.firstName}
-                   placeholderTextColor = {'#000'}
+                   placeholderTextColor = {'#F4EBDB'}
                    onChangeText = { (text)=>{
                        this.setState({
                            changedFirstName: text
                        })
                    }}
+                   style = {[ styles.textInput, { marginTop: '5%' } ]}
                 />
 
                 <TextInput
                    placeholder = {this.state.lastName}
-                   placeholderTextColor = {'#000'}
+                   placeholderTextColor = {'#F4EBDB'}
                    onChangeText = { (text)=>{
                        this.setState({
                            changedLastName: text
                        })
                    }}
+                   style = {styles.textInput}
                 />
 
                 <TextInput 
                    placeholder = {this.state.password}
-                   placeholderTextColor = {'#000'}
+                   placeholderTextColor = {'#F4EBDB'}
                    onChangeText = { (text)=>{
                        this.setState({
                            newPassword: text
                        })
                    }}
+                   style = {styles.textInput}
                 />
 
-                <TouchableOpacity onPress = {()=>{
+                <TouchableOpacity 
+                   onPress = {()=>{
                     this.reauthenticateAndChangePassword();
                     this.updateUserProfile();
-                }}>
-                    <Text>Save Changes</Text>
+                   }}
+                   style = {styles.saveButton}>
+                    <Text style = {styles.buttonText}>Save Changes</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity onPress = {()=>{
                     this.deleteUser();
-                }}>
-                    <Text>Delete User</Text>
+                }}
+                    style = {styles.deleteButton}>
+                    <Text style = {styles.buttonText}>Delete User</Text>
                 </TouchableOpacity>
+
+                </ScrollView>
+
+                </View>
 
             </View>
         )
     }
 
 }
+
+
+const styles = StyleSheet.create({
+
+    view: {
+        marginTop: '4%',
+        alignItems: 'center'
+    },
+
+    textInput: {
+        backgroundColor: 'rgba(44, 120, 115, 0.7)',
+        marginBottom: 40,
+        paddingVertical: 10,
+        fontFamily: 'Lora-Bold',
+        color: '#F4EBDB',
+        paddingLeft: 10,
+        fontSize: 15,
+        borderRadius: 4,
+        borderBottomColor: '#2C4A52',
+        borderBottomWidth: 3,
+        width: '50%'
+    },
+
+    saveButton: {
+        backgroundColor: '#021C1E',
+        width: '11%',
+        paddingHorizontal: 17,
+        paddingVertical: 10,
+        marginBottom: 30,
+        shadowColor: '#2C4A52',
+        shadowOffset: { width: 4, height: 4 },
+        shadowRadius: 5,
+        marginTop: 30,
+        alignSelf: 'center'
+    },
+
+    deleteButton: {
+        backgroundColor: 'red',
+        width: '11%',
+        paddingHorizontal: 17,
+        paddingVertical: 10,
+        alignSelf: 'center'
+    },
+
+    buttonText: {
+        color: '#f4EBDB',
+        alignSelf: 'center',
+        fontFamily: 'Lora-Bold',
+        fontSize: 16
+    }
+
+})

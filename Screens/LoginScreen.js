@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, TextInput, TouchableOpacity, KeyboardAvoidingView, Modal, ScrollView } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, KeyboardAvoidingView, Modal, ScrollView, StyleSheet, ImageBackground } from 'react-native';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword, getAuth, updateProfile, sendPasswordResetEmail } from 'firebase/auth';      
 import { getFirestore, collection, addDoc, getDocs, where, limit, updateDoc, doc, query } from 'firebase/firestore';
 import app from '../config';
@@ -27,33 +27,40 @@ export default class LoginScreen extends React.Component {
               animationType = 'fade'
               transparent = {true}
               visible = {this.state.isModalVisible}>
-                  <View style = {{ margin: 100}}>
+                  <View style = {styles.form}>
 
                       <ScrollView>
                           <KeyboardAvoidingView>
 
+                              <Text style = {{ fontFamily: 'Lora', color: '#F4EBDB', fontWeight: 'bold', fontSize: 17, alignSelf: 'center' }}>Sign Up</Text>
+
                               <TextInput 
                                   placeholder = {'First Name'}
+                                  placeholderTextColor = {'#F4EBDB'}
                                   onChangeText = {(text)=>{
                                       this.setState({
                                           firstName: text
                                       })
                                   }}
                                   value = {this.state.firstName}
+                                  style = {styles.signUpTextInput}
                               />
 
                               <TextInput 
                                   placeholder = {'Last Name'}
+                                  placeholderTextColor = {'#F4EBDB'}
                                   onChangeText = {(text)=>{
                                       this.setState({
                                           lastName: text
                                       })
                                   }}
                                   value = {this.state.lastName}
+                                  style = {styles.signUpTextInput}
                               />
 
                               <TextInput 
                                   placeholder = {'Email ID'}
+                                  placeholderTextColor = {'#F4EBDB'}
                                   onChangeText = {(text)=>{
                                       this.setState({
                                           emailID: text
@@ -61,10 +68,12 @@ export default class LoginScreen extends React.Component {
                                   }}
                                   keyboardType = 'email-address'
                                   value = {this.state.emailID}
+                                  style = {styles.signUpTextInput}
                               />
 
                               <TextInput 
                                   placeholder = {'Password'}
+                                  placeholderTextColor = {'#F4EBDB'}
                                   onChangeText = {(text)=>{
                                       this.setState({
                                           password: text
@@ -72,10 +81,12 @@ export default class LoginScreen extends React.Component {
                                   }}
                                   secureTextEntry = {true}
                                   value = {this.state.password}
+                                  style = {styles.signUpTextInput}
                               />
 
                               <TextInput 
                                   placeholder = {'Confirm Password'}
+                                  placeholderTextColor = {'#F4EBDB'}
                                   onChangeText = {(text)=>{
                                       this.setState({
                                           confirmPassword: text
@@ -83,25 +94,28 @@ export default class LoginScreen extends React.Component {
                                   }}
                                   secureTextEntry = {true}
                                   value = {this.state.confirmPassword}
+                                  style = {styles.signUpTextInput}
                               />  
 
                               <TouchableOpacity
+                                style = {styles.formButton}
                                 onPress = {()=>{
                                     this.userSignUp(this.state.emailID, this.state.password);
                                     this.setState({
                                         isModalVisible: false
                                     });
                                 }}>
-                                  <Text>Register</Text>
+                                  <Text style = {styles.formButtonText}>Register</Text>
                               </TouchableOpacity>
 
                               <TouchableOpacity
+                                style = {styles.formButton}
                                 onPress = {()=>{
                                     this.setState({
                                         isModalVisible: false
                                     })
                                 }}>
-                                  <Text>Cancel</Text>
+                                  <Text style = {styles.formButtonText}>Cancel</Text>
                               </TouchableOpacity>
 
                           </KeyboardAvoidingView>
@@ -237,8 +251,14 @@ export default class LoginScreen extends React.Component {
 
     render(){
         return(
-            <View>
-                <Text>LoginScreen</Text>
+            <View style = {styles.container}>
+                <ImageBackground source = {require('../assets/bg_img.jpeg')} style = {styles.imageBackground} resizeMode = 'cover'>
+
+                <ScrollView style = {{ marginTop: '10%', marginBottom: '20%' }}>
+
+                <View style = {styles.titleBackground}>
+                    <Text style = {styles.title}>DYNAMIC TIME TABLE</Text>
+                </View>
 
                 <View>
                     {this.showModal()}
@@ -246,6 +266,7 @@ export default class LoginScreen extends React.Component {
 
                 <TextInput 
                   placeholder = {"Email ID"}
+                  placeholderTextColor = {'#F4EBDB'}
                   keyboardType = 'email-address'
                   autoFocus = {true}
                   onChangeText = { (text)=>{
@@ -253,43 +274,173 @@ export default class LoginScreen extends React.Component {
                           emailID: text
                       })
                   }}
+                  style = {styles.textInput}
+                  blurOnSubmit = {true}
                 />
 
                 <TextInput 
                   placeholder = {"Password"}
+                  placeholderTextColor = {'#F4EBDB'}
                   secureTextEntry = {true}
                   onChangeText = { (text)=>{
                       this.setState({
                           password: text
                       })
                   }}
+                  style = {styles.textInput}
                 />
 
                 <TouchableOpacity
+                  style = {styles.button}
                   onPress = { ()=>{
                       this.userLogin(this.state.emailID, this.state.password);
                   }}>
-                    <Text>Login</Text>
+                    <Text style = {styles.buttonText}>Login</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
+                  style = {styles.button}
                   onPress = { ()=>{
                       this.setState({
                           isModalVisible: true
                       })
                   }}>
-                    <Text>Sign up</Text>
+                    <Text style = {styles.buttonText}>Sign up</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity 
+                  style = {styles.forgotButton}
                   onPress = {()=>{
                       this.resetPassword()
                   }}>
-                    <Text>Forgot Password?</Text>
+                    <Text style = {styles.forgotText}>Forgot Password?</Text>
                 </TouchableOpacity>
 
+                </ScrollView>
+
+                </ImageBackground>
             </View>
         )
     }
 
 }
+
+
+const styles = StyleSheet.create({
+
+    container: {
+        width: '100%',
+        height: '100%',
+        backgroundColor: '#021C1E'
+    },
+
+    imageBackground: { 
+        flex: 1, 
+        justifyContent: 'center',
+        marginHorizontal: '10%'
+    },
+
+    titleBackground: {
+        backgroundColor: 'rgba(6, 28, 30, 0.5)', 
+        padding: 20, 
+        alignSelf: 'center',
+        marginBottom: '10%'
+    },
+
+    title: { 
+        fontFamily: 'Lora-Bold', 
+        color: '#F4EBDB', 
+        fontWeight: 'bold', 
+        fontSize: 80 
+    },
+
+    textInput: {
+        fontFamily: 'Lora',
+        backgroundColor: 'rgba(142, 197, 171, 0.7)',
+        width: '60%',
+        padding: 10,
+        marginLeft: '8%',
+        borderRadius: 3,
+        borderBottomColor: '#021C1E',
+        borderBottomWidth: 2,
+        color: '#F4EBDB',
+        fontSize: 16,
+        marginBottom: 40,
+    },
+
+    button: {
+        backgroundColor: '#021C1E',
+        padding: 15,
+        width: '10%',
+        justifyContent: 'center',
+        marginLeft: '8%',        
+        shadowColor: '#004445',
+        shadowOffset: { width: 5, height: 5 },
+        shadowRadius: 5,
+        marginBottom: 25
+    },
+
+    buttonText: {
+        color: '#F4EBDB',
+        fontFamily: 'Lora',
+        fontWeight: 'bold',
+        alignSelf: 'center',
+        fontSize: 16
+    },
+
+    forgotButton: {
+        backgroundColor: 'rgba(0, 68, 69, 0.5)',
+        marginLeft: '8%',
+        alignSelf: 'flex-start'
+    },
+
+    forgotText: {
+        fontFamily: 'Lora',
+        color: '#F4EBDB',
+        fontSize: 16
+    },
+
+    signUpTextInput: {
+        fontFamily: 'Lora',
+        backgroundColor: 'rgba(142, 197, 171, 0.9)',
+        padding: 5,
+        borderRadius: 3,
+        borderBottomColor: '#021C1E',
+        borderBottomWidth: 2,
+        color: '#F4EBDB',
+        alignSelf: 'center',
+        margin: 10,
+        width: '100%'
+    },
+
+    formButton: {
+        backgroundColor: '#021C1E',
+        padding: 10,
+        width: '15%',
+        justifyContent: 'center',
+        shadowColor: '#004445',
+        shadowOffset: { width: 5, height: 5 },
+        shadowRadius: 5,
+        alignSelf: 'center',
+        marginBottom: 15,
+        marginTop: 5
+    },
+
+    formButtonText: {
+        fontFamily: 'Lora',
+        color: '#F4EBDB',
+        alignSelf: 'center',
+    },
+
+    form: {
+        margin: 100, 
+        alignSelf: 'center', 
+        width: '40%', 
+        borderColor: '#FFF', 
+        borderWidth: 2, 
+        paddingHorizontal: 20, 
+        paddingTop: 20, 
+        backgroundColor: 'rgba(0, 0, 0, 0.5)'
+    }
+    
+})

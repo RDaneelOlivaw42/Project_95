@@ -17,7 +17,8 @@ export default class CustomSideBarMenu extends React.Component {
         this.state = {
             userId: '',
             image: '',
-            fetchedNameFirebase: ''
+            fetchedNameFirebase: '',
+            runFetchImage: 0
         }
     }
 
@@ -42,8 +43,6 @@ export default class CustomSideBarMenu extends React.Component {
                 });
             }
         });
-
-        this.fetchImage(this.state.userId)
     }
 
 
@@ -109,6 +108,7 @@ export default class CustomSideBarMenu extends React.Component {
 
                 <View style = {styles.avatar}>
                     <Avatar
+                        avatarStyle = {{ alignSelf: 'center' }}
                         source = {{ uri: this.state.image }}
                         rounded = {true}
                         size = 'xlarge'
@@ -118,8 +118,8 @@ export default class CustomSideBarMenu extends React.Component {
                     />
                 </View>
 
-                <View>
-                    <Text>Welcome, {this.state.fetchedNameFirebase}</Text>
+                <View style = {styles.nameView}>
+                    <Text style = {{ fontSize: 16, fontWeight: 'bold' }}>Welcome, {this.state.fetchedNameFirebase}</Text>
                 </View>
 
                 <View style = {styles.drawerItemsContainer}>
@@ -181,11 +181,22 @@ const styles = StyleSheet.create({
     },
 
     logOutText: {
-        fontWeight: 'bold'
+        fontWeight: 'bold',
     },
 
     avatar: {
-        alignSelf: 'center'
+        alignItems: 'center',
+        paddingTop: '5%',
+        backgroundColor: '#2C7873',
+        width: '100%',
+        alignContent: 'center',
+        paddingBottom: '5%'
+    },
+
+    nameView: {
+        alignItems: 'center',
+        marginTop: '5%',
+        marginBottom: '5%'
     }
 
 })
